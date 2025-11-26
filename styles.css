@@ -1,0 +1,207 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+.page-container {
+  display: flex;
+  position: relative;
+  min-height: 100vh;
+}
+.sidebar {
+  width: 210px;
+
+  background-color: #403d3d;
+
+  color: rgb(255, 255, 255);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 100;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar a {
+  display: block;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.sidebar a:hover {
+  background-color: #676767;
+}
+
+.content {
+  background-color: #a6aaab;
+  flex-grow: 1;
+  padding: 40px;
+  margin-left: 210px;
+  /* 👇 PGN 레이아웃을 위한 Flex 설정 추가 */
+  display: flex; 
+  gap: 30px; 
+}
+.hamburger-btn {
+  position: fixed;
+  top: 15px;
+  left: 230px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  z-index: 200;
+}
+
+.sidebar.close {
+  display: none;
+}
+
+/* 사이드바가 닫혔을 때 버튼 위치 */
+.sidebar.close ~ .hamburger-btn {
+  left: 20px; /* 왼쪽 벽에 붙음 */
+}
+
+/* 사이드바가 닫혔을 때 콘텐츠 영역 확장 */
+.content.shifted {
+  margin-left: 0; /* 여백 제거하여 전체 화면 사용 */
+}
+
+/* --- 체스판 페이지 레이아웃 및 디자인 --- */
+
+/* 체스판과 상태 묶는 컨테이너 */
+.board-and-status-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start;
+  flex-shrink: 0;
+  width: 400px; /* 체스판의 너비와 동일하게 설정 */
+}
+
+/* 체스판 컨테이너 스타일 */
+#myBoard {
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  /* 👇 불필요한 테두리 및 그림자 제거/초기화 */
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 400px;
+}
+
+/* 상태 텍스트 스타일 */
+.board-and-status-container p {
+    margin-top: 10px; 
+    margin-bottom: 0;
+    color: #212121; 
+    font-size: 14px;
+}
+
+#status {
+  font-weight: bold;
+  color: black; 
+}
+
+/* --- PGN (게임 기록) 스타일 --- */
+#pgn-container {
+  flex-shrink: 0; 
+  width: 250px; 
+}
+
+#pgn-container h3 {
+  color: #212121; 
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#pgn-text {
+  background-color: #212121; 
+  color: #ffffff; 
+  border: 1px solid #333; 
+  border-radius: 10px; 
+  padding: 15px;
+  font-family: monospace; 
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-y: auto; 
+  max-height: 450px; 
+  white-space: pre-wrap;
+}
+
+
+
+/* --- 용어.html (규칙 페이지) 스타일 --- */
+
+/* 규칙 내용을 감싸는 컨테이너 */
+.rules-content-wrapper {
+  max-width: 900px; /* 너무 넓게 퍼지는 것을 방지 */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rules-content-wrapper h1 {
+  color: #403d3d;
+  border-bottom: 2px solid #a6aaab;
+  padding-bottom: 10px;
+  margin-top: 0;
+}
+
+.rules-content-wrapper h2 {
+  color: #212121;
+  margin-top: 30px;
+  font-size: 1.5em;
+}
+
+.rules-content-wrapper h3 {
+  color: #403d3d;
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+/* 섹션 간 간격 */
+.rule-section {
+  margin-bottom: 40px;
+}
+
+/* 테이블 스타일 */
+.rules-content-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.95em;
+}
+
+.rules-content-wrapper th,
+.rules-content-wrapper td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.rules-content-wrapper th {
+  background-color: #f2f2f2;
+  color: #403d3d;
+  font-weight: bold;
+}
+
+.rules-content-wrapper tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.rules-content-wrapper ul {
+  padding-left: 20px;
+}
+
+.rules-content-wrapper li {
+  margin-bottom: 8px;
+}
