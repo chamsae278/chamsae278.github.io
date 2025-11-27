@@ -20,8 +20,264 @@
       </aside>
       <button class="hamburger-btn" id="hamburgerBtn">☰</button>
       <main class="content" id="mainContent">
+        
+        <div class="rules-content-wrapper">
+          <h1>체스 용어 정리</h1>
+          
+          <hr>
+
+          <h2>♟️ 1. 말의 움직임 및 규칙 (Movement & Rules)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>용어</th>
+                <th>영어 이름</th>
+                <th>설명</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>체크</strong></td>
+                <td>Check</td>
+                <td>상대방의 <strong>킹</strong>을 지금 당장 위협하는 상태. 킹이 잡힐 위치에 놓였을 때 선언하며, 상대는 다음 수에 반드시 위협에서 벗어나야 합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>체크메이트</strong></td>
+                <td>Checkmate (Mate)</td>
+                <td><strong>체크</strong> 상태에서 상대방의 킹이 어떤 수를 두어도 위협에서 벗어날 수 없는 상태. <strong>게임의 승리</strong>를 의미합니다. 
+
+[Image of checkmate position]
+</td>
+              </tr>
+              <tr>
+                <td><strong>캐슬링</strong></td>
+                <td>Castling</td>
+                <td><strong>킹</strong>과 <strong>룩</strong>을 동시에 움직이는 특별한 수. 킹이 안전한 위치로 이동하면서 룩이 중앙으로 전개됩니다.</td>
+              </tr>
+              <tr>
+                <td><strong>앙파상</strong></td>
+                <td>En Passant</td>
+                <td>상대방의 <strong>폰</strong>이 두 칸 전진했을 때, 그 폰을 마치 한 칸만 전진한 것처럼 대각선으로 잡을 수 있는 특별한 규칙. 오직 한 번의 기회만 주어집니다.</td>
+              </tr>
+              <tr>
+                <td><strong>프로모션</strong></td>
+                <td>Promotion</td>
+                <td><strong>폰</strong>이 상대방의 진영 맨 끝(8번째 또는 1번째 행)에 도달했을 때, <strong>킹</strong>을 제외한 다른 기물(주로 <strong>퀸</strong>)로 승격시키는 것.</td>
+              </tr>
+              <tr>
+                <td><strong>스큐어</strong></td>
+                <td>Skewer</td>
+                <td>두 기물을 동시에 위협하는 공격으로, 가치가 높은 기물(예: 킹)을 먼저 공격하여 킹이 피하면 뒤에 있는 가치가 낮은 기물까지 잡는 전술.</td>
+              </tr>
+              <tr>
+                <td><strong>핀</strong></td>
+                <td>Pin</td>
+                <td>기물을 움직이면 뒤에 있는 더 가치 있는 기물(주로 킹이나 퀸)이 위험해지기 때문에, 앞의 기물이 움직일 수 없게 되는 상황. 주로 <strong>비숍, 룩, 퀸</strong>이 사용합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>포크</strong></td>
+                <td>Fork</td>
+                <td>한 기물(주로 <strong>나이트</strong>)이 두 개 이상의 기물을 동시에 공격하는 전술.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <hr>
+
+          <h2>💡 2. 상황 및 전략 (Situation & Strategy)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>용어</th>
+                <th>영어 이름</th>
+                <th>설명</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>오프닝</strong></td>
+                <td>Opening</td>
+                <td><strong>초반부</strong> (보통 10~15수 이내). 기물을 전개하고 중앙을 장악하며 킹을 안전하게 만드는 단계입니다.</td>
+              </tr>
+              <tr>
+                <td><strong>미들 게임</strong></td>
+                <td>Middlegame</td>
+                <td><strong>중반부</strong>. 오프닝이 끝난 후, 전술과 전략을 실행하며 본격적인 전투가 일어나는 단계입니다.</td>
+              </tr>
+              <tr>
+                <td><strong>엔드 게임</strong></td>
+                <td>Endgame</td>
+                <td><strong>종반부</strong>. 대부분의 기물이 교환되어 보드에 기물이 몇 개 남지 않은 단계. <strong>폰</strong>의 중요성이 커지고 <strong>킹</strong>도 전투에 참여합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>드로</strong></td>
+                <td>Draw</td>
+                <td>무승부. 체크메이트가 아닌 상태에서 양측이 승리할 수 없는 상황을 의미합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>스테일메이트</strong></td>
+                <td>Stalemate</td>
+                <td><strong>킹</strong>이 <strong>체크</strong> 상태는 아니지만, <strong>정상적으로 둘 수 있는 수가 전혀 없는</strong> 상태. <strong>무승부</strong>로 처리됩니다. </td>
+              </tr>
+              <tr>
+                <td><strong>템포</strong></td>
+                <td>Tempo</td>
+                <td>한 번의 수로 얻는 '시간적인 이득'. 예를 들어, 상대를 위협하며 기물을 전개하면 템포를 얻었다고 표현합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>포지션</strong></td>
+                <td>Position</td>
+                <td>현재 보드의 기물 배치 상태. 포지션의 우위(Space, Development, King safety 등)를 분석하는 것이 중요합니다.</td>
+              </tr>
+              <tr>
+                <td><strong>전개</strong></td>
+                <td>Development</td>
+                <td><strong>오프닝</strong> 단계에서 폰을 움직인 후, <strong>나이트</strong>나 <strong>비숍</strong> 같은 마이너 피스를 활용할 수 있는 위치로 옮기는 행위.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <hr>
+
+          <h2>👑 3. 기물 이름 (Pieces)</h2>
+          <p>체스는 총 6종류의 기물을 사용합니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>기물 (아이콘)</th>
+                <th>영어 이름</th>
+                <th>줄임말 (PGN 표기)</th>
+                <th>가치 (일반적)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>👑</td>
+                <td><strong>킹</strong></td>
+                <td>K</td>
+                <td>무한대 (게임의 목표)</td>
+              </tr>
+              <tr>
+                <td>♕</td>
+                <td><strong>퀸</strong></td>
+                <td>Q</td>
+                <td>9점 (가장 강한 기물)</td>
+              </tr>
+              <tr>
+                <td>♖</td>
+                <td><strong>룩</strong></td>
+                <td>R</td>
+                <td>5점</td>
+              </tr>
+              <tr>
+                <td>♗</td>
+                <td><strong>비숍</strong></td>
+                <td>B</td>
+                <td>3점</td>
+              </tr>
+              <tr>
+                <td>♘</td>
+                <td><strong>나이트</strong></td>
+                <td>N</td>
+                <td>3점</td>
+              </tr>
+              <tr>
+                <td>♙</td>
+                <td><strong>폰</strong></td>
+                <td>P (표기 생략)</td>
+                <td>1점</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <hr>
+
+          <h2>🍴 4. 핵심 전술: 포크(Fork) 자세히 알아보기</h2>
+
+          <p><strong>포크(Fork)</strong>는 <strong>하나의 기물</strong>이 <strong>상대방의 두 개 이상의 기물을 동시에 공격</strong>하는 전술을 말합니다. 상대방은 한 번의 수로 두 가지 위협을 모두 막을 수 없기 때문에, 보통은 가치가 더 높은 기물을 보호하고, 가치가 낮은 기물은 포기하게 됩니다.</p>
+
+          <h3>포크의 주요 종류 및 특징</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>종류</th>
+                <th>사용하는 기물</th>
+                <th>특징</th>
+                <th>일반적인 공격 대상</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>나이트 포크</strong></td>
+                <td>♘ (나이트)</td>
+                <td>가장 흔하고 강력합니다. 나이트의 독특한 움직임 때문에 예측이 어렵습니다.</td>
+                <td>킹 + 퀸, 퀸 + 룩, 룩 + 룩 등 고가치 기물 조합. 
+
+[Image of a knight fork on a chess board]
+</td>
+              </tr>
+              <tr>
+                <td><strong>퀸 포크</strong></td>
+                <td>♕ (퀸)</td>
+                <td>모든 방향으로 움직일 수 있어 기회가 많지만, 퀸의 가치가 높아 안전성이 중요합니다.</td>
+                <td>킹 + 기물, 두 룩 등.</td>
+              </tr>
+              <tr>
+                <td><strong>폰 포크</strong></td>
+                <td>♙ (폰)</td>
+                <td>가치가 낮은 폰으로 높은 가치의 기물을 잡을 수 있는 유리한 전술입니다.</td>
+                <td>나이트 + 비숍 등.</td>
+              </tr>
+              <tr>
+                <td><strong>룩 포크</strong></td>
+                <td>♖ (룩)</td>
+                <td>같은 행이나 열에 놓인 기물을 공격합니다.</td>
+                <td>킹 + 퀸 또는 룩 + 룩.</td>
+              </tr>
+              <tr>
+                <td><strong>비숍 포크</strong></td>
+                <td>♗ (비숍)</td>
+                <td>같은 대각선 상에 놓인 기물을 공격합니다.</td>
+                <td>룩, 퀸, 나이트.</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <h3>💡 포크와 스큐어(Skewer), 핀(Pin)의 차이점</h3>
+          <p>이 전술들은 모두 '이중 공격'이지만, 공격 방식에 차이가 있습니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>전술</th>
+                <th>정의</th>
+                <th>공격 방식</th>
+                <th>핵심 목표</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>포크</strong> (Fork)</td>
+                <td>하나의 기물이 **두 기물을 동시에 공격**하는 것.</td>
+                <td>두 기물을 한 번에 위협하여 하나를 포기하도록 강요.</td>
+                <td>물질적 이득 확보.</td>
+              </tr>
+              <tr>
+                <td><strong>핀</strong> (Pin)</td>
+                <td>앞 기물을 움직이면 **뒤의 더 가치 있는 기물**이 위험해지는 것.</td>
+                <td>앞 기물의 움직임을 제한하여 사실상 무력화.</td>
+                <td>기물 마비 및 방어선 제거.</td>
+              </tr>
+              <tr>
+                <td><strong>스큐어</strong> (Skewer)</td>
+                <td>**가치가 높은 기물**을 먼저 공격하고, 그 기물이 피하면 **뒤의 가치 낮은 기물**까지 잡는 것.</td>
+                <td>가치가 높은 기물을 강제 이동시켜 뒤의 기물을 노출.</td>
+                <td>물질적 이득 확보.</td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
-      </main>
+        </main>
     </div> <script src="jquery.min.js"></script>
     <script src="script.js"></script>
   </body>

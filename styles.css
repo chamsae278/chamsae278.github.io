@@ -104,6 +104,37 @@ body {
     font-size: 14px;
 }
 
+.board-and-status-container p {
+  margin-bottom: 5px; /* 상태 메시지 간 간격 조정 */
+  font-size: 18px;
+  color: #212121;
+}
+
+/* 👇 리셋 버튼 및 액션 버튼 스타일 추가 */
+.action-button {
+  background-color: #f77765; /* 밝은 빨간색 계열 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 15px; /* 체스판/상태 메시지와의 간격 */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 4px #d84315; /* 3D 효과를 위한 그림자 */
+}
+
+.action-button:hover {
+  background-color: #d84315; /* 호버 시 더 진하게 */
+}
+
+.action-button:active {
+  background-color: #c0392b; /* 클릭 시 더 진하게 */
+  box-shadow: 0 2px #c0392b; /* 버튼 눌리는 효과 */
+  transform: translateY(2px);
+}
+
 #status {
   font-weight: bold;
   color: black; 
@@ -205,3 +236,4 @@ body {
 .rules-content-wrapper li {
   margin-bottom: 8px;
 }
+
