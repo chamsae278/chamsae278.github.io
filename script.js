@@ -182,3 +182,53 @@ $(function () {
   }
 
 });
+
+function initBoard() {
+    // 뷰포트 너비를 기반으로 보드 크기 결정
+    var screenWidth = $(window).width();
+    var boardSize;
+    
+    // 모바일/좁은 화면 (768px 이하)
+    if (screenWidth <= 768) {
+        // 화면 너비의 90%를 사용하되, 최대 350px로 제한
+        boardSize = Math.min(screenWidth * 0.9, 350); 
+    } else {
+        // 데스크톱 환경 (기존 400px 사용)
+        boardSize = 400;
+    }
+
+    var config = {
+      draggable: true,
+      position: 'start',
+      onDragStart: onDragStart,
+      onDrop: onDrop,
+      onSnapEnd: onSnapEnd,
+      // 💡 동적으로 결정된 크기를 사용합니다.
+      pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
+      // 크기를 config에 포함하지 않고 DOM 스타일에서 처리합니다.
+    };
+
+    // DOM 요소를 가져와 크기를 직접 설정
+    var $boardDiv = $('#myBoard');
+    $boardDiv.css('width', boardSize + 'px');
+
+    board = Chessboard('myBoard', config);
+    
+    // 창 크기가 변경될 때마다 보드 크기를 재설정하도록 리스너 추가 (선택 사항)
+    $(window).on('resize', function() {
+        // resize 이벤트 발생 시 크기를 다시 계산하고 보드에 적용
+        var newScreenWidth = $(window).width();
+        var newBoardSize;
+        if (newScreenWidth <= 768) {
+            newBoardSize = Math.min(newScreenWidth * 0.9, 350);
+        } else {
+            newBoardSize = 400;
+        }
+
+        if ($boardDiv.width() != newBoardSize) {
+             $boardDiv.css('width', newBoardSize + 'px');
+             board.resize(); // chessboard.js의 resize 함수 호출
+        }
+    });
+
+  }
