@@ -11,22 +11,7 @@
   <body>
     <div class="background-chess-pieces">
       <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+      </div>
     <div class="page-container">
       <aside class="sidebar" id="sidebar">
         <nav>
@@ -44,16 +29,20 @@
       <main class="content" id="mainContent">
         <div class="board-and-status-container">
             <div id="myBoard"></div>
-            <p>오프닝: <span id="opening-name">아직 오프닝이 아닙니다.</span></p>
-            <p>상태: <span id="status">게임 시작 대기</span></p>
-            <button id="resetBtn" class="action-button">게임 리셋</button>
-        </div>
 
-        <div id="pgn-container">
-          <h3>Moves (기록)</h3>
-          <pre id="pgn-text"></pre>
+            <div class="game-info-wrapper">
+                <p>오프닝: <span id="opening-name">아직 오프닝이 아닙니다.</span></p>
+                <p>상태: <span id="status">게임 시작 대기</span></p>
+                <button id="resetBtn" class="action-button">게임 리셋</button>
+                
+                <div id="pgn-container">
+                  <h3>Moves (기록)</h3>
+                  <pre id="pgn-text"></pre>
+                </div>
+            </div>
+            
         </div>
-      </main>
+        </main>
     </div>
 
     <script src="jquery.min.js"></script>

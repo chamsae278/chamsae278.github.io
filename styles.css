@@ -2,6 +2,7 @@ body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   overflow-x: hidden;
+  background-color: #a6aaab;
 }
 .page-container {
   display: flex;
@@ -10,16 +11,14 @@ body {
 }
 .sidebar {
   width: 210px;
-
   background-color: #403d3d;
-
   color: rgb(255, 255, 255);
-
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   z-index: 100;
+  /* 🛠️ transition 제거 */
 }
 
 .sidebar ul {
@@ -33,7 +32,7 @@ body {
   padding: 15px 20px;
   text-decoration: none;
   color: white;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s; /* 이전 상태 유지 */
 }
 
 .sidebar a:hover {
@@ -44,94 +43,90 @@ body {
   background-color: #a6aaab;
   flex-grow: 1;
   padding: 40px;
-  margin-left: 210px;
-  /* 👇 PGN 레이아웃을 위한 Flex 설정 추가 */
-  display: flex; 
-  gap: 30px; 
+  margin-left: 250px; 
+  /* 🛠️ transition 제거 */
 }
+
 .hamburger-btn {
   position: fixed;
   top: 15px;
-  left: 230px;
+  left: 270px;
   font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;
   color: #333;
   z-index: 200;
+  /* 🛠️ transition 제거 */
 }
 
-.sidebar.close {
-  display: none;
-}
+/* 사이드바가 닫혔을 때 */
+.sidebar.close { left: -210px; }
+.sidebar.close + .hamburger-btn { left: 20px; }
+.content.shifted { margin-left: 0; }
 
-/* 사이드바가 닫혔을 때 버튼 위치 */
-.sidebar.close ~ .hamburger-btn {
-  left: 20px; /* 왼쪽 벽에 붙음 */
-}
+/* --- 레이아웃 핵심 부분 (이전 수정 내용 유지) --- */
 
-/* 사이드바가 닫혔을 때 콘텐츠 영역 확장 */
-.content.shifted {
-  margin-left: 0; /* 여백 제거하여 전체 화면 사용 */
-}
-
-/* --- 체스판 페이지 레이아웃 및 디자인 --- */
-
-/* 체스판과 상태 묶는 컨테이너 */
 .board-and-status-container {
   display: flex;
-  flex-direction: column; 
+  flex-direction: row;
   align-items: flex-start;
-  flex-shrink: 0;
-  width: 400px; /* 체스판의 너비와 동일하게 설정 */
+  gap: 20px;
+  width: auto; 
 }
 
-/* 체스판 컨테이너 스타일 */
 #myBoard {
-  margin-top: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-  /* 👇 불필요한 테두리 및 그림자 제거/초기화 */
-  border: none !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  width: 400px;
+    margin-top: 0; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    border: none !important;
+    flex-shrink: 0;
 }
 
-/* 상태 텍스트 스타일 */
-.board-and-status-container p {
-    margin-top: 10px; 
-    margin-bottom: 0;
+/* 2. 📌 새로 만든 정보창 래퍼 스타일 */
+.game-info-wrapper {
+    display: flex;
+    flex-direction: column; /* 세로로 배치 */
+    gap: 10px; /* ✨ 핵심: 요소들 사이의 간격을 정확히 10px로 고정 */
+    /* width: 100%; <- 제거 */
+    align-items: flex-start; /* 내부 요소들을 왼쪽으로 정렬 */
+}
+
+.game-info-wrapper p {
     color: #212121; 
-    font-size: 14px;
+    font-size: 18px;
+    margin: 0; 
 }
 
-.board-and-status-container p {
-  margin-bottom: 5px; /* 상태 메시지 간 간격 조정 */
-  font-size: 18px;
-  color: #212121;
+#resetBtn {
+    margin: 0; 
 }
 
-/* 👇 리셋 버튼 및 액션 버튼 스타일 추가 */
+/* PGN 컨테이너 */
+#pgn-container {
+  max-width: 400px; /* 🛠️ 수정: 최대 너비 설정하여 과도하게 길어지는 것 방지 */
+  width: 100%; /* 부모에 대해서는 100%를 유지하되, max-width에 제한됨 */
+  margin: 0; 
+}
+
+
 .action-button {
-  background-color: #f77765; /* 밝은 빨간색 계열 */
+  background-color: #f77765; 
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  margin-top: 15px; /* 체스판/상태 메시지와의 간격 */
+  width: auto; /* 🛠️ 수정: 버튼 너비를 내용물 크기로 고정 */
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   transition: background-color 0.2s, transform 0.1s;
-  box-shadow: 0 4px #d84315; /* 3D 효과를 위한 그림자 */
+  box-shadow: 0 4px #d84315; 
 }
 
-.action-button:hover {
-  background-color: #d84315; /* 호버 시 더 진하게 */
-}
-
+.action-button:hover { background-color: #d84315; }
 .action-button:active {
-  background-color: #c0392b; /* 클릭 시 더 진하게 */
-  box-shadow: 0 2px #c0392b; /* 버튼 눌리는 효과 */
+  background-color: #c0392b; 
+  box-shadow: 0 2px #c0392b; 
   transform: translateY(2px);
 }
 
@@ -141,15 +136,10 @@ body {
 }
 
 /* --- PGN (게임 기록) 스타일 --- */
-#pgn-container {
-  flex-shrink: 0; 
-  width: 250px; 
-}
-
 #pgn-container h3 {
   color: #212121; 
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 0; 
+  margin-bottom: 5px;
 }
 
 #pgn-text {
@@ -162,163 +152,67 @@ body {
   font-size: 14px;
   line-height: 1.6;
   overflow-y: auto; 
-  max-height: 450px; 
+  max-height: 250px; 
   white-space: pre-wrap;
 }
 
-
-
-/* --- 용어.html (규칙 페이지) 스타일 --- */
-
-/* 규칙 내용을 감싸는 컨테이너 */
-.rules-content-wrapper {
-  max-width: 900px; /* 너무 넓게 퍼지는 것을 방지 */
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.rules-content-wrapper h1 {
-  color: #403d3d;
-  border-bottom: 2px solid #a6aaab;
-  padding-bottom: 10px;
-  margin-top: 0;
-}
-
-.rules-content-wrapper h2 {
-  color: #212121;
-  margin-top: 30px;
-  font-size: 1.5em;
-}
-
-.rules-content-wrapper h3 {
-  color: #403d3d;
-  margin-top: 20px;
-  font-size: 1.2em;
-}
-
-/* 섹션 간 간격 */
-.rule-section {
-  margin-bottom: 40px;
-}
-
-/* 테이블 스타일 */
-.rules-content-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 0.95em;
-}
-
-.rules-content-wrapper th,
-.rules-content-wrapper td {
-  border: 1px solid #ddd;
-  padding: 12px 15px;
-  text-align: left;
-}
-
-.rules-content-wrapper th {
-  background-color: #f2f2f2;
-  color: #403d3d;
-  font-weight: bold;
-}
-
-.rules-content-wrapper tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.rules-content-wrapper ul {
-  padding-left: 20px;
-}
-
-.rules-content-wrapper li {
-  margin-bottom: 8px;
-}
-
-/* --- 모바일 환경 반응형 스타일 (Mobile Responsiveness) --- */
-
-/* 태블릿 및 모바일 (화면 너비 768px 이하) */
+/* --- 모바일 환경 반응형 스타일 --- */
 @media (max-width: 768px) {
-  /* 사이드바는 기본적으로 닫혀있음 (닫힌 상태의 width로 설정) */
-  .sidebar {
-    left: -210px; /* 화면 밖으로 이동 */
-    transition: left 0.3s ease;
-  }
-
-  /* 메인 콘텐츠는 기본적으로 전체 너비 사용 */
-  .content {
-    margin-left: 0;
-    padding: 20px; /* 패딩 축소 */
-    transition: margin-left 0.3s ease;
-  }
-
-  /* 사이드바가 열렸을 때 (JS에서 .close가 제거된 상태) */
-  .sidebar.close {
-    left: 0; /* 화면 안으로 이동 */
-  }
-  
- 
-
+  .sidebar { left: -210px; }
   .hamburger-btn {
-    display: block; /* 모바일에서 햄버거 버튼 표시 */
-    position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 101; /* 사이드바 위로 오도록 */
     background-color: #403d3d;
     color: white;
-    border: none;
     padding: 10px;
     border-radius: 5px;
-    cursor: pointer;
+  }
+  .sidebar.close + .hamburger-btn { left: 10px; }
+  
+  .content {
+    margin-left: 0;
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
   }
 
-  /* 보드와 상태 컨테이너를 모바일에서 세로로 배열 */
   .board-and-status-container {
-    flex-direction: column;
-    align-items: center; /* 가운데 정렬 */
+      flex-direction: column;
+      align-items: center; 
+      width: 100%; 
+      max-width: 500px; 
+      gap: 20px;
+  }
+  
+  #myBoard {
+      margin-top: 20px;
+      width: 100% !important;
   }
 
-  /* PGN 컨테이너 패딩 조정 */
-  #pgn-container {
-    padding: 10px;
-    margin-top: 20px;
+  .game-info-wrapper {
+      width: 100%;
+      align-items: flex-start;
+      gap: 10px;
   }
 
-  /* PGN 텍스트 영역의 최대 높이 조정 */
   #pgn-text {
-    max-height: 300px; 
+    max-height: 250px; 
     font-size: 12px;
   }
 }
 
-/* 좁은 모바일 화면 (화면 너비 480px 이하) */
 @media (max-width: 480px) {
-    /* 체스판 최대 크기 제한 */
-    #myBoard {
-        width: 100% !important; /* 부모 컨테이너에 맞춰 최대한 늘리도록 설정 (JS에서 설정한 400px을 오버라이드) */
-        max-width: 350px; /* 너무 커지지 않도록 최대 너비 설정 */
+    .board-and-status-container, #pgn-container {
+        max-width: 100%;
     }
 }
 
-.valid-move {
-  /* radial-gradient를 사용하여 칸 가운데에 회색 원을 그립니다. */
-  background: radial-gradient(rgba(100, 100, 100, 0.6) 15%, transparent 16%);
-}
 /* --- 기물/칸 선택 효과 스타일 --- */
 
 /* 1. 기물 선택 시 일시적 확대 효과 */
-/* piece-417db는 chessboard.js가 기물 이미지에 부여하는 클래스명입니다. */
-/* --- 기물/칸 선택 효과 스타일 --- */
-
-/* 1. 기물 선택 시 일시적 확대 효과 */
-/* --- 기물/칸 선택 효과 스타일 --- */
-
-/* 1. 기물 선택 시 일시적 확대 효과 (변경 없음) */
 .piece-417db.selected-piece {
-    transition: transform 0.15s ease-out; 
+    transition: transform 0.15s ease-out; /* 이전 상태 유지 */
     transform: scale(1.15) translateY(-5%); 
     z-index: 999; 
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.5);
@@ -326,24 +220,27 @@ body {
 
 /* 2. 이동 가능한 칸 하이라이트 (노란색 점 - 기물이 없는 빈 칸에만 적용) */
 .valid-move {
-  /* 황금색(Gold) 계열로 20% 크기의 점(dot)을 표시 */
   background: radial-gradient(rgba(255, 215, 0, 0.8) 20%, transparent 21%); 
   cursor: pointer;
 }
 
-/* 3. 선택된 칸 강조 (선택된 기물이 있는 칸 자체의 배경 - 변경 없음) */
-.selected-square {
-    box-shadow: inset 0 0 0 2px #FFD700; 
-}
-
-/* 4. 💥 (수정된 핵심 로직) 잡을 수 있는 기물 강조 (체스판 배경을 건드리지 않는 테두리) */
+/* 3. 선택된 칸 강조 */
+.selected-square { box-shadow: inset 0 0 0 2px #FFD700; }
 .square-55d63.capture-target {
-    /* 기존 valid-move의 background 효과를 완전히 지우고, */
     background: none; 
-    
-    /* 굵은 내부 그림자(inset shadow)를 사용하여 테두리 효과를 만듭니다. */
-    /* 이 효과는 칸의 배경색을 변경하지 않고 테두리만 만듭니다. */
-    box-shadow: inset 0 0 0 4px #FFD700; /* 황금색(Gold) 4px 두께의 테두리 */
-    
+    box-shadow: inset 0 0 0 4px #FFD700; 
     cursor: pointer;
 }
+
+/* --- 규칙 페이지 스타일 (변경 없음) --- */
+.rules-content-wrapper { max-width: 900px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+.rules-content-wrapper h1 { color: #403d3d; border-bottom: 2px solid #a6aaab; padding-bottom: 10px; margin-top: 0; }
+.rules-content-wrapper h2 { color: #212121; margin-top: 30px; font-size: 1.5em; }
+.rules-content-wrapper h3 { color: #403d3d; margin-top: 20px; font-size: 1.2em; }
+.rule-section { margin-bottom: 40px; }
+.rules-content-wrapper table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+.rules-content-wrapper th, .rules-content-wrapper td { border: 1px solid #ddd; padding: 12px 15px; text-align: left; }
+.rules-content-wrapper th { background-color: #f2f2f2; color: #403d3d; font-weight: bold; }
+.rules-content-wrapper tr:nth-child(even) { background-color: #f9f9f9; }
+.rules-content-wrapper ul { padding-left: 20px; }
+.rules-content-wrapper li { margin-bottom: 8px; }
