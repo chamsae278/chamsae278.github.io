@@ -50,7 +50,7 @@ body {
 .hamburger-btn {
   position: fixed;
   top: 15px;
-  left: 270px;
+  left: 230px;
   font-size: 24px;
   background: none;
   border: none;
@@ -243,4 +243,5 @@ body {
 .rules-content-wrapper th { background-color: #f2f2f2; color: #403d3d; font-weight: bold; }
 .rules-content-wrapper tr:nth-child(even) { background-color: #f9f9f9; }
 .rules-content-wrapper ul { padding-left: 20px; }
+
 .rules-content-wrapper li { margin-bottom: 8px; }
