@@ -18,7 +18,7 @@ body {
   left: 0;
   height: 100%;
   z-index: 100;
-  /* 🛠️ transition 제거 */
+  /* transition 제거 유지 */
 }
 
 .sidebar ul {
@@ -32,7 +32,7 @@ body {
   padding: 15px 20px;
   text-decoration: none;
   color: white;
-  transition: background-color 0.2s; /* 이전 상태 유지 */
+  transition: background-color 0.2s;
 }
 
 .sidebar a:hover {
@@ -44,20 +44,20 @@ body {
   flex-grow: 1;
   padding: 40px;
   margin-left: 250px; 
-  /* 🛠️ transition 제거 */
+  /* transition 제거 유지 */
 }
 
 .hamburger-btn {
   position: fixed;
   top: 15px;
-  left: 230px;
+  left: 270px;
   font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;
   color: #333;
   z-index: 200;
-  /* 🛠️ transition 제거 */
+  /* transition 제거 유지 */
 }
 
 /* 사이드바가 닫혔을 때 */
@@ -65,12 +65,16 @@ body {
 .sidebar.close + .hamburger-btn { left: 20px; }
 .content.shifted { margin-left: 0; }
 
-/* --- 레이아웃 핵심 부분 (이전 수정 내용 유지) --- */
+---
 
+### 🖥️ 데스크톱/와이드 스크린 레이아웃 (기본)
+
+```css
+/* board-and-status-container: 체스판과 정보 패널을 가로로 배치 */
 .board-and-status-container {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: row; /* 가로 배치 */
+  align-items: flex-start; /* 상단 정렬 */
   gap: 20px;
   width: auto; 
 }
@@ -79,16 +83,15 @@ body {
     margin-top: 0; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
     border: none !important;
-    flex-shrink: 0;
+    flex-shrink: 0; /* 크기 고정 */
 }
 
-/* 2. 📌 새로 만든 정보창 래퍼 스타일 */
+/* game-info-wrapper: 정보 패널 내부 요소 (간격 10px 유지) */
 .game-info-wrapper {
     display: flex;
-    flex-direction: column; /* 세로로 배치 */
-    gap: 10px; /* ✨ 핵심: 요소들 사이의 간격을 정확히 10px로 고정 */
-    /* width: 100%; <- 제거 */
-    align-items: flex-start; /* 내부 요소들을 왼쪽으로 정렬 */
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
 }
 
 .game-info-wrapper p {
@@ -101,21 +104,21 @@ body {
     margin: 0; 
 }
 
-/* PGN 컨테이너 */
+/* PGN 기록 컨테이너 너비 제어 */
 #pgn-container {
-  max-width: 400px; /* 🛠️ 수정: 최대 너비 설정하여 과도하게 길어지는 것 방지 */
-  width: 100%; /* 부모에 대해서는 100%를 유지하되, max-width에 제한됨 */
+  max-width: 400px; /* 길어지는 문제 해결을 위해 설정된 최대 너비 유지 */
+  width: 100%; 
   margin: 0; 
 }
 
-
+/* 👇 리셋 버튼 스타일 */
 .action-button {
   background-color: #f77765; 
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  width: auto; /* 🛠️ 수정: 버튼 너비를 내용물 크기로 고정 */
+  width: auto; /* 너비 고정 유지 */
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
@@ -135,7 +138,7 @@ body {
   color: black; 
 }
 
-/* --- PGN (게임 기록) 스타일 --- */
+/* --- PGN (게임 기록) 스타일 (변경 없음) --- */
 #pgn-container h3 {
   color: #212121; 
   margin-top: 0; 
@@ -156,7 +159,11 @@ body {
   white-space: pre-wrap;
 }
 
-/* --- 모바일 환경 반응형 스타일 --- */
+---
+
+### 📱 모바일/태블릿 레이아웃 (`@media` Query)
+
+```css
 @media (max-width: 768px) {
   .sidebar { left: -210px; }
   .hamburger-btn {
@@ -177,9 +184,11 @@ body {
     align-items: center; 
   }
 
+  /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 */
   .board-and-status-container {
-      flex-direction: column;
-      align-items: center; 
+      display: flex; /* Flex로 변경 유지 */
+      flex-direction: column; /* 세로 배치로 변경 */
+      align-items: center; /* 중앙 정렬 */
       width: 100%; 
       max-width: 500px; 
       gap: 20px;
@@ -187,13 +196,20 @@ body {
   
   #myBoard {
       margin-top: 20px;
-      width: 100% !important;
+      width: 100% !important; /* 모바일에서 꽉 차게 */
+      /* script.js에서 보드 크기를 동적으로 설정하므로, 여기서는 너비만 제어 */
   }
 
+  /* 🛠️ 수정: 정보 래퍼는 가로 꽉 채우고 내용은 왼쪽 정렬 */
   .game-info-wrapper {
       width: 100%;
       align-items: flex-start;
       gap: 10px;
+  }
+
+  /* PGN 컨테이너 모바일에서는 꽉 차도록 max-width 해제 */
+  #pgn-container {
+    max-width: 100%;
   }
 
   #pgn-text {
@@ -208,23 +224,17 @@ body {
     }
 }
 
-/* --- 기물/칸 선택 효과 스타일 --- */
-
-/* 1. 기물 선택 시 일시적 확대 효과 */
+/* --- 기물/칸 선택 효과 스타일 (변경 없음) --- */
 .piece-417db.selected-piece {
-    transition: transform 0.15s ease-out; /* 이전 상태 유지 */
+    transition: transform 0.15s ease-out; 
     transform: scale(1.15) translateY(-5%); 
     z-index: 999; 
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.5);
 }
-
-/* 2. 이동 가능한 칸 하이라이트 (노란색 점 - 기물이 없는 빈 칸에만 적용) */
 .valid-move {
   background: radial-gradient(rgba(255, 215, 0, 0.8) 20%, transparent 21%); 
   cursor: pointer;
 }
-
-/* 3. 선택된 칸 강조 */
 .selected-square { box-shadow: inset 0 0 0 2px #FFD700; }
 .square-55d63.capture-target {
     background: none; 
@@ -243,5 +253,4 @@ body {
 .rules-content-wrapper th { background-color: #f2f2f2; color: #403d3d; font-weight: bold; }
 .rules-content-wrapper tr:nth-child(even) { background-color: #f9f9f9; }
 .rules-content-wrapper ul { padding-left: 20px; }
-
 .rules-content-wrapper li { margin-bottom: 8px; }
