@@ -8,117 +8,168 @@ $(function () {
   const resetBtn = document.getElementById("resetBtn");
   
   var board = null;
-  var game = new Chess();
+  var game = new Chess(); // Chess 객체가 없으면 오류가 날 수 있으니 chess.min.js가 로드되어야 함
   var $status = $("#status");
   var $pgnText = $("#pgn-text");
   var $openingName = $("#opening-name");
   
   // 클릭 이동을 위한 상태 변수
   var $board = $('#myBoard');
-  var squareToHighlight = null; // 현재 선택된 기물의 위치 (from)
-  var squareClass = 'square-55d63'; // chessboard.js의 칸 클래스명
+  var squareToHighlight = null; 
+  var squareClass = 'square-55d63'; 
 
-  // 오프닝 데이터 (기존과 동일)
-const OPENINGS = [
-    // ----------------------------------------------------------------------
-    // 1. 1. e4 e5 Openings (오픈 게임 계열)
-    // ----------------------------------------------------------------------
-    // Ruy Lopez (루이 로페즈)
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7", name: "Ruy Lopez: Closed (루이 로페즈: 클로즈드)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4", name: "Ruy Lopez: Open (루이 로페즈: 오픈)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6", name: "Ruy Lopez: Berlin Defense (베를린 디펜스)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5", name: "Ruy Lopez (루이 로페즈)" },
+  // --- 오프닝 데이터 (업데이트: desc 필드 추가) ---
+  const OPENINGS = [
+    // 1. 1. e4 e5 Openings
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7", 
+        name: "Ruy Lopez: Closed", 
+        desc: "백이 중앙을 강력하게 통제하며 장기적인 전략적 우위를 점하려는 전통적인 오프닝입니다. 흑의 반격을 억제하며 천천히 압박합니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4", 
+        name: "Ruy Lopez: Open", 
+        desc: "흑이 백의 중앙 폰을 잡으며 적극적으로 기물을 전개하는 공격적인 라인입니다. 복잡한 전술 싸움이 일어납니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6", 
+        name: "Ruy Lopez: Berlin Defense", 
+        desc: "'베를린 장벽'이라 불리며, 매우 견고하고 무승부 비율이 높은 방어법입니다. 엔드게임 실력이 중요합니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bb5", 
+        name: "Ruy Lopez", 
+        desc: "가장 유명하고 분석이 많이 된 오프닝 중 하나입니다. 백이 비숍으로 흑의 나이트를 압박하며 주도권을 잡습니다." 
+    },
     
-    // Italian Game (이탈리안 게임)
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. d3", name: "Giuoco Piano: Giuoco Pianissimo (죠코 피아니시모)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4", name: "Giuoco Piano: Classical (죠코 피아노: 클래식)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5", name: "Giuoco Piano (죠코 피아노)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 d5 5. exd5 Nxd5 6. d4", name: "Two Knights Defense: Fried Liver Attack (프라이드 리버 어택)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6", name: "Two Knights Defense (투 나이트 디펜스)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4", name: "Italian Game (이탈리안 게임)" }, 
+    // Italian Game
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. d3", 
+        name: "Giuoco Piano: Pianissimo", 
+        desc: "매우 조용하고 느린 전개를 선호하는 형태입니다. 중앙 폰을 바로 밀지 않고 기물을 안전하게 배치합니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4", 
+        name: "Giuoco Piano: Classical", 
+        desc: "백이 중앙을 강력하게 차지하려는 시도입니다. 흑이 정확하게 대응하지 않으면 순식간에 무너질 수 있습니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5", 
+        name: "Giuoco Piano", 
+        desc: "이탈리안 게임의 기본 형태로, 비숍을 c4에 배치해 흑의 약점인 f7 칸을 노립니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 d5 5. exd5 Nxd5 6. d4", 
+        name: "Two Knights: Fried Liver", 
+        desc: "백이 나이트를 희생하여 흑의 킹을 중앙으로 끌어내는 매우 공격적이고 위험한 전술입니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6", 
+        name: "Two Knights Defense", 
+        desc: "흑이 비숍 전개 대신 나이트를 꺼내 백의 e4 폰을 역공하는 공격적인 방어법입니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Bc4", 
+        name: "Italian Game", 
+        desc: "초보자부터 마스터까지 애용하는 오프닝입니다. 빠른 전개와 중앙 싸움이 특징입니다." 
+    },
 
-    // Four Knights Game (포 나잇 게임)
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. Bb5 Bb4 5. O-O O-O", name: "Four Knights Game: Spanish Variation (스페니시)" },
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6", name: "Four Knights Game (포 나잇 게임)" }, 
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. Nc3", name: "Three Knights Game (쓰리 나잇 게임)" }, 
+    // Four Knights & Others
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. Bb5 Bb4 5. O-O O-O", 
+        name: "Four Knights: Spanish", 
+        desc: "네 개의 나이트가 모두 나온 안정적인 형태입니다. 대칭적인 구조가 많아 무승부가 자주 나옵니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6", 
+        name: "Four Knights Game", 
+        desc: "안정적이고 견고한 게임을 원하는 플레이어에게 적합합니다." 
+    }, 
+    { 
+        pgn: "1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4", 
+        name: "Scotch Game", 
+        desc: "백이 d4로 즉시 중앙을 엽니다. 흑의 e5 거점을 없애고 공간 우위를 가져가려 합니다." 
+    },
+    { 
+        pgn: "1. e4 e5 2. f4 exf4 3. Nf3", 
+        name: "King's Gambit Accepted", 
+        desc: "낭만주의 체스의 대표작입니다. 백이 킹 쪽 폰을 희생하여 공격 라인을 엽니다. 매우 위험하고 화려합니다." 
+    },
     
-    // Scotch & Vienna
-    { pgn: "1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4", name: "Scotch Game (스코티시 게임)" },
-    { pgn: "1. e4 e5 2. Nc3 Nf6 3. g3", name: "Vienna Game: Falkbeer Variation (빈 게임)" },
+    // 2. Sicilian Defense
+    { 
+        pgn: "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6", 
+        name: "Sicilian: Najdorf", 
+        desc: "시실리안 디펜스 중 가장 유명하고 복잡한 라인입니다. 바비 피셔와 카스파로프가 애용했습니다." 
+    },
+    { 
+        pgn: "1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6", 
+        name: "Sicilian: Dragon", 
+        desc: "흑의 비숍을 g7으로 피앙케토하여 대각선을 장악합니다. 서로 반대쪽 캐슬링 후 격렬한 공격이 이어집니다." 
+    },
+    { 
+        pgn: "1. e4 c5", 
+        name: "Sicilian Defense", 
+        desc: "1.e4에 대한 가장 인기 있고 승률이 높은 흑의 대응입니다. 불균형한 포지션을 만들어 승부를 봅니다." 
+    },
     
-    // King's Gambit (킹스 갬빗)
-    { pgn: "1. e4 e5 2. f4 exf4 3. Nf3", name: "King's Gambit Accepted (킹스 갬빗: 억셉티드)" },
+    // French & Caro-Kann
+    { 
+        pgn: "1. e4 e6 2. d4 d5", 
+        name: "French Defense", 
+        desc: "견고하지만 다소 수동적인 방어법입니다. 흑은 e6-d5 구조로 백의 중앙에 도전합니다." 
+    }, 
+    { 
+        pgn: "1. e4 c6 2. d4 d5", 
+        name: "Caro-Kann Defense", 
+        desc: "매우 단단한 방어법입니다. 프렌치 디펜스와 비슷하지만 c8 비숍의 길이 막히지 않는 장점이 있습니다." 
+    }, 
     
-    // ----------------------------------------------------------------------
-    // 2. 1. e4 Non-e5 Defenses (기타 1.e4 방어)
-    // ----------------------------------------------------------------------
-    // Sicilian Defense (시실리안 디펜스)
-    { pgn: "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6", name: "Sicilian Defense: Najdorf (시실리안: 나이도프)" },
-    { pgn: "1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e5", name: "Sicilian Defense: Sveshnikov (시실리안: 스베시니코프)" },
-    { pgn: "1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6", name: "Sicilian Defense: Dragon (시실리안: 드래곤)" },
-    { pgn: "1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6", name: "Sicilian Defense: Scheveningen (시실리안: 스케베닝겐)" },
-    { pgn: "1. e4 c5 2. Nf3 Nc6", name: "Sicilian Defense: Open (시실리안: 오픈)" },
-    { pgn: "1. e4 c5", name: "Sicilian Defense (시실리안 디펜스)" },
+    // 3. d4 Openings
+    { 
+        pgn: "1. d4 d5 2. c4 dxc4", 
+        name: "Queen's Gambit Accepted", 
+        desc: "흑이 폰을 잡지만 지키려 하지 않고 빠른 기물 전개에 집중하는 전략입니다." 
+    },
+    { 
+        pgn: "1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3", 
+        name: "Queen's Gambit Declined", 
+        desc: "오래전부터 사용된 고전적인 방어법입니다. 흑이 중앙을 굳건히 지킵니다." 
+    },
+    { 
+        pgn: "1. d4 Nf6 2. c4 g6 3. Nc3 Bg7", 
+        name: "King's Indian Defense", 
+        desc: "흑이 중앙을 내어주고 나중에 킹 사이드 공격으로 반격하는 하이퍼모던 오프닝입니다." 
+    },
+    { 
+        pgn: "1. d4 d5 2. c4 c6 3. Nf3 Nf6", 
+        name: "Slav Defense", 
+        desc: "d5 폰을 c6 폰으로 지키며 견고한 진형을 구축합니다. 퀸즈 갬빗 디클라인드보다 비숍 활용이 쉽습니다." 
+    },
     
-    // French Defense (프렌치 디펜스)
-    { pgn: "1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. e5", name: "French Defense: Advance Variation (어드밴스)" },
-    { pgn: "1. e4 e6 2. d4 d5 3. Nd2", name: "French Defense: Tarrasch Variation (타라시)" },
-    { pgn: "1. e4 e6 2. d4 d5 3. Nc3", name: "French Defense: Classical (클래시컬)" },
-    { pgn: "1. e4 e6 2. d4 d5", name: "French Defense (프렌치 디펜스)" }, 
-    
-    // Caro-Kann Defense (캐로-칸 디펜스)
-    { pgn: "1. e4 c6 2. d4 d5 3. exd5 cxd5 4. Bd3 Nc6 5. c3", name: "Caro-Kann Defense: Exchange Variation (교환형)" },
-    { pgn: "1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5", name: "Caro-Kann Defense: Classical (클래시컬)" },
-    { pgn: "1. e4 c6 2. d4 d5", name: "Caro-Kann Defense (캐로-칸 디펜스)" }, 
-    
-    // Pirc & Modern
-    { pgn: "1. e4 d6 2. d4 Nf6 3. Nc3 g6", name: "Pirc Defense (피르츠 디펜스)" },
-    { pgn: "1. e4 g6 2. d4 Bg7 3. Nc3", name: "Modern Defense (모던 디펜스)" },
-    
-    // Miscellaneous
-    { pgn: "1. e4 Nf6 2. e5 Nd5 3. d4 d6", name: "Alekhine Defense (알레킨 디펜스)" },
-    { pgn: "1. e4 d5 2. exd5 Qxd5 3. Nc3", name: "Scandinavian Defense (스칸디나비아 디펜스)" },
-    
-    // ----------------------------------------------------------------------
-    // 3. 1. d4 Openings (퀸즈 폰 오프닝 계열)
-    // ----------------------------------------------------------------------
-    // Queen's Gambit (퀸즈 갬빗)
-    { pgn: "1. d4 d5 2. c4 dxc4", name: "Queen's Gambit Accepted (퀸즈 갬빗: 억셉티드)" },
-    { pgn: "1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3", name: "Queen's Gambit Declined (퀸즈 갬빗: 디클라인드)" },
-    
-    // Indian Defenses (인도 디펜스)
-    { pgn: "1. d4 Nf6 2. c4 g6 3. Nc3 d5", name: "Gruenfeld Defense (그룬펠트 디펜스)" },
-    { pgn: "1. d4 Nf6 2. c4 e6 3. Nc3 Bb4", name: "Nimzo-Indian Defense (님조-인디언 디펜스)" },
-    { pgn: "1. d4 Nf6 2. c4 e6 3. Nf3 b6", name: "Queen's Indian Defense (퀸즈 인디언 디펜스)" },
-    { pgn: "1. d4 Nf6 2. c4 g6 3. Nc3 Bg7", name: "King's Indian Defense: Classical (킹스 인디언: 클래시컬)" },
-    { pgn: "1. d4 Nf6 2. c4 g6", name: "King's Indian Defense (킹스 인디언 디펜스)" },
-    
-    // Slav Defense (슬라브 디펜스)
-    { pgn: "1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4", name: "Semi-Slav Defense: Anti-Meran (세미-슬라브)" },
-    { pgn: "1. d4 d5 2. c4 c6 3. Nf3 Nf6", name: "Slav Defense (슬라브 디펜스)" },
-    
-    // Other d4
-    { pgn: "1. d4 Nf6 2. c4 e5 3. dxe5 Ng4", name: "Budapest Gambit (부다페스트 갬빗)" },
-    { pgn: "1. d4 d6 2. c4 e5 3. dxe5", name: "Old Indian Defense (올드 인디언)" },
-    
-    // ----------------------------------------------------------------------
-    // 4. Flank & Irregular Openings (측면 및 비정형 오프닝)
-    // ----------------------------------------------------------------------
-    { pgn: "1. c4 e5 2. Nc3 Nf6 3. g3 d5 4. cxd5 Nxd5", name: "English Opening: Four Knights Variation (잉글리시: 포 나잇)" },
-    { pgn: "1. c4", name: "English Opening (잉글리시 오프닝)" },
-    { pgn: "1. Nf3 d5 2. g3 Nf6 3. Bg2", name: "Réti Opening (레티 오프닝)" },
-    { pgn: "1. f4 d5 2. Nf3", name: "Bird's Opening (버드 오프닝)" },
-    { pgn: "1. g3", name: "King's Fianchetto Opening (킹스 피앙케토)" },
-    { pgn: "1. b3", name: "Larsen's Opening (라르센 오프닝)" },
-    
-    // ----------------------------------------------------------------------
-    // 5. General / Fallback (일반)
-    // ----------------------------------------------------------------------
-    { pgn: "1. e4 e5 2. Nf3 Nc6", name: "Open Game (오픈 게임)" },
-    { pgn: "1. e4", name: "King's Pawn Opening (킹스 폰 오프닝)" },
-    { pgn: "1. d4", name: "Queen's Pawn Opening (퀸즈 폰 오프닝)" },
-    { pgn: "", name: "아직 오프닝이 아닙니다." },
-];
+    // 4. Others
+    { 
+        pgn: "1. c4", 
+        name: "English Opening", 
+        desc: "백이 c4 폰을 먼저 밀어 중앙을 측면에서 통제합니다. 유연하고 전략적인 게임이 됩니다." 
+    },
+    { 
+        pgn: "1. Nf3 d5 2. g3", 
+        name: "Réti Opening", 
+        desc: "중앙 폰을 밀지 않고 나이트와 피앙케토 비숍으로 중앙을 간접 통제합니다." 
+    },
+    { 
+        pgn: "1. e4", 
+        name: "King's Pawn Opening", 
+        desc: "가장 대중적인 첫수입니다. 중앙 통제와 기물 전개를 빠르게 할 수 있습니다." 
+    },
+    { 
+        pgn: "1. d4", 
+        name: "Queen's Pawn Opening", 
+        desc: "1.e4보다 안전하고 전략적인 게임으로 이어지는 경우가 많습니다." 
+    }
+  ];
+
   // --- UI 이벤트 핸들러 (사이드바) ---
   if (hamburgerBtn) {
     hamburgerBtn.addEventListener("click", function () {
@@ -127,137 +178,143 @@ const OPENINGS = [
     });
   }
 
-  // --- 체스 로직 함수들 ---
+  // --- [추가 기능] 오프닝 페이지 버튼 생성 및 팝업 로직 ---
+  
+  // 현재 페이지에 오프닝 그리드 컨테이너가 있는지 확인
+  const openingGrid = document.getElementById("opening-grid");
+  const openingModal = document.getElementById("openingModal");
+  const modalCloseBtn = document.querySelector(".close-modal");
 
-  // 이동 가능한 경로 표시 및 선택 표시 제거 함수
+  if (openingGrid) {
+      // OPENINGS 배열을 순회하며 버튼 생성
+      OPENINGS.forEach(opening => {
+          // 이름이 "아직 오프닝이 아닙니다."인 항목 등 무의미한 항목 제외
+          if (!opening.pgn || opening.name === "아직 오프닝이 아닙니다.") return;
+
+          const btn = document.createElement("button");
+          btn.className = "opening-btn";
+          btn.textContent = opening.name;
+          
+          // 클릭 이벤트: 모달 띄우기
+          btn.addEventListener("click", () => {
+              // 모달 내용 채우기
+              document.getElementById("modalTitle").textContent = opening.name;
+              document.getElementById("modalPgn").textContent = opening.pgn;
+              
+              // 설명이 없으면 기본 텍스트
+              document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "이 오프닝에 대한 설명이 준비 중입니다.";
+              
+              // 모달 보이기
+              openingModal.style.display = "block";
+          });
+
+          openingGrid.appendChild(btn);
+      });
+  }
+
+  // 모달 닫기 버튼 (x)
+  if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", () => {
+          openingModal.style.display = "none";
+      });
+  }
+
+  // 모달 바깥 영역 클릭 시 닫기
+  window.addEventListener("click", (event) => {
+      if (event.target == openingModal) {
+          openingModal.style.display = "none";
+      }
+  });
+
+  // --------------------------------------------------------
+  // (이하 기존 체스 게임 로직은 myBoard가 있는 페이지에서만 실행되도록 보호)
+  if ($('#myBoard').length === 0) return; // 체스판이 없으면 여기서 스크립트 중단
+
   function removeHighlights() {
-    // 💡 capture-target 클래스 제거 추가
     $board.find('.' + squareClass).removeClass('valid-move selected-square capture-target'); 
-    $board.find('.piece-417db').removeClass('selected-piece'); // 기물 선택 효과 제거
+    $board.find('.piece-417db').removeClass('selected-piece'); 
     $board.find('.' + squareClass).css('box-shadow', '');
   }
 
-  // 이동 가능한 칸 하이라이트 표시
   function highlightMoves(square, moves) {
-      $board.find('.square-' + square).addClass('selected-square'); // 선택된 칸 강조
-      $board.find('.square-' + square + ' .piece-417db').addClass('selected-piece'); // 기물 강조 효과
+      $board.find('.square-' + square).addClass('selected-square'); 
+      $board.find('.square-' + square + ' .piece-417db').addClass('selected-piece'); 
       
       for (var i = 0; i < moves.length; i++) {
           const targetSquare = moves[i].to;
           $board.find('.square-' + targetSquare).addClass('valid-move');
 
-          // 💡 캡처 가능한 기물 강조 로직 추가
           const pieceOnTarget = game.get(targetSquare);
           if (pieceOnTarget && pieceOnTarget.color !== game.turn()) {
-              // 상대방 기물이 있다면 캡처 타겟 클래스 추가
               $board.find('.square-' + targetSquare).addClass('capture-target'); 
           }
       }
   }
 
-  // 칸 클릭/터치 이벤트 핸들러 (클릭 이동 로직)
   function onSquareClick(event) {
-    // --- 👇 추가된 부분: 게임 종료 시 클릭 이동 차단 ---
-    if (game.game_over()) {
-        // 게임이 종료되었으면 (체크메이트, 무승부 포함) 아무것도 하지 않고 함수 종료
-        return; 
-    }
-    // --- 👆 추가된 부분 종료 ---
-    
-    // 터치 이벤트 충돌 방지
-    if (event.type === 'touchend') {
-        event.preventDefault(); 
-    }
+    if (game.game_over()) return; 
+    if (event.type === 'touchend') event.preventDefault(); 
     
     var $target = $(event.currentTarget); 
     var square = $target.attr('data-square');
-    var targetPiece = game.get(square); // 클릭된 칸의 기물
+    var targetPiece = game.get(square); 
 
-    // 1. 이미 기물이 선택된 상태 (squareToHighlight가 설정됨)
     if (squareToHighlight) {
-        
-        // 1-A. VALID MOVE 체크 및 실행
         var moves = game.moves({ square: squareToHighlight, verbose: true });
         var move = moves.find(m => m.to === square);
 
         if (move) {
-            // ** VALID MOVE: 이동 애니메이션 실행 **
-            removeHighlights(); // 이동 전에 하이라이트 제거
-            squareToHighlight = null; // 선택 상태 초기화
-
-            // game.move()로 chess.js 상태 변경 후, board.position()으로 애니메이션 반영
-            // board.position()이 chessboard.js에 내장된 애니메이션을 사용합니다.
+            removeHighlights(); 
+            squareToHighlight = null; 
             game.move(move.san); 
             board.position(game.fen()); 
-
             updateStatus();
             updatePgn();
             updateOpening();
             return; 
         }
         
-        // 1-B. DESELECTION / SELECTION SWITCH
-
-        // 클릭된 칸에 기물이 없으면 -> 선택 취소 (빈 공간 터치)
         if (!targetPiece) {
             removeHighlights();
             squareToHighlight = null;
             return; 
         }
 
-        // 자신의 기물을 다시 터치했거나 다른 자신의 기물을 터치한 경우
         if (targetPiece.color === game.turn()) {
-            // 자신의 기물을 다시 터치했으면 선택 취소 (토글)
             if (squareToHighlight === square) {
                 removeHighlights();
                 squareToHighlight = null;
                 return;
             }
-            // 다른 자신의 기물을 터치했으면 선택 변경 (아래 2번 로직으로 이동)
         } else {
-            // 상대방 기물을 터치했지만 유효한 이동 목표가 아님 -> 선택 취소
             removeHighlights();
             squareToHighlight = null;
             return;
         }
     }
 
-
-    // 2. New Selection Logic (새로운 기물 선택)
-
-    // 기물이 없거나 상대방 기물을 클릭한 경우 (선택 불가)
     if (!targetPiece || targetPiece.color !== game.turn()) {
         removeHighlights();
         squareToHighlight = null;
         return;
     }
 
-    // 자신의 기물을 선택 (새로운 선택 또는 선택 변경)
     removeHighlights();
     squareToHighlight = square;
     var moves = game.moves({ square: square, verbose: true });
     highlightMoves(square, moves);
   }
 
-  // 드래그 앤 드롭 기능을 완전히 비활성화 (클릭 이동만 사용)
   function onDragStart(source, piece, position, orientation) {
-  // --- 👇 수정된 부분: 게임 종료 시 드래그 차단 ---
-  // 게임이 끝났으면 (체크메이트, 스테일메이트, 50수 규칙 등) 기물 이동을 차단합니다.
-  if (game.game_over()) {
-    return false;
+    if (game.game_over()) return false;
+    if (
+        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+        (game.turn() === 'b' && piece.search(/^w/) !== -1)
+    ) {
+        return false; 
+    }
   }
-  // --- 👆 수정된 부분 종료 ---
-  
-  // 기물의 색깔 확인 (현재 턴의 기물만 움직일 수 있음)
-  if (
-    (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-    (game.turn() === 'b' && piece.search(/^w/) !== -1)
-  ) {
-    return false; // 상대방 기물이면 움직임 차단
-  }
-}
 
-  // onSnapEnd 및 onMoveEnd는 position()으로 대체하여 사용하지 않습니다.
   function updateStatus() {
     var status = "";
     var moveColor = "White (백)";
@@ -312,16 +369,14 @@ const OPENINGS = [
     }
   }
 
-  // --- 보드 초기화 및 반응형 설정 ---
   function initBoard() {
     var screenWidth = $(window).width();
     var boardSize;
     
-    // 👇 체스판 크기를 660px로 조정하고, 모바일 최대 크기를 500px로 설정합니다.
     if (screenWidth <= 768) {
         boardSize = Math.min(screenWidth * 0.9, 500); 
     } else {
-        boardSize = 645; // 데스크톱 기본 크기 660px
+        boardSize = 645; 
     }
 
     var config = {
@@ -339,15 +394,13 @@ const OPENINGS = [
     
     $('#myBoard').on('click touchend', '.square-55d63', onSquareClick);
 
-    // 창 크기가 변경될 때마다 보드 크기를 재설정
     $(window).on('resize', function() {
         var newScreenWidth = $(window).width();
         var newBoardSize;
-        // 👇 체스판 크기를 660px로 조정하고, 모바일 최대 크기를 500px로 설정합니다.
         if (newScreenWidth <= 768) {
-            newBoardSize = Math.min(newScreenWidth * 0.9, 500); // 모바일 최대 크기 500px
+            newBoardSize = Math.min(newScreenWidth * 0.9, 500); 
         } else {
-            newBoardSize = 645; // 데스크톱 기본 크기 660px
+            newBoardSize = 645; 
         }
 
         if ($boardDiv.width() != newBoardSize) {
@@ -361,7 +414,6 @@ const OPENINGS = [
     updateOpening();
   }
 
-  // 앱 시작
   initBoard();
 
   if (resetBtn) {
