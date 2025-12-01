@@ -7,7 +7,7 @@ $(function () {
   const mainContent = document.getElementById("mainContent");
   const resetBtn = document.getElementById("resetBtn");
   
-  // Chess 객체 안전 초기화 (라이브러리가 없거나, 이 페이지가 아니어도 오류 방지)
+  // Chess 객체 안전 초기화
   var game = null;
   try {
       if (typeof Chess !== 'undefined') {
@@ -17,17 +17,19 @@ $(function () {
       console.warn("Chess 라이브러리(chess.min.js) 로드 실패: 체스판 로직은 비활성화됩니다.");
   }
 
-  // 오프닝 페이지 관련 DOM 요소
-  const openingGrid = document.getElementById("opening-grid");
-  const filterContainer = document.getElementById("filter-buttons-container");
+  // 오프닝 페이지 & 게임 페이지 공통 DOM
   const openingModal = document.getElementById("openingModal");
   const modalCloseBtn = document.querySelector(".close-modal");
 
+  // 게임 페이지 관련 변수
   var board = null;
   var $status = $("#status");
   var $pgnText = $("#pgn-text");
   var $openingName = $("#opening-name");
   
+  // 오프닝 데이터 저장 변수 (현재 오프닝 정보를 저장)
+  let currentOpening = null; 
+
   // 클릭 이동을 위한 상태 변수 (체스판 전용)
   var $board = $('#myBoard');
   var squareToHighlight = null; 
@@ -80,9 +82,34 @@ $(function () {
   // 필터링에 사용할 주요 첫 수 목록
   const FILTER_MOVES = ['All', '1. e4', '1. d4', '1. c4', '1. Nf3'];
 
-  // --- 3. 오프닝 페이지 관련 핵심 로직 (필터링 및 렌더링) ---
+  // --- 3. UI 이벤트 핸들러 및 모달 로직 (전 페이지 공통) ---
+  
+  // 사이드바 토글
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", function () {
+      sidebar.classList.toggle("close");
+      if(mainContent) mainContent.classList.toggle("shifted");
+    });
+  }
 
-  // 오프닝 버튼 생성 및 모달 이벤트 연결
+  // 모달 닫기 이벤트 (오프닝/게임 페이지 공통)
+  if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", () => {
+          if (openingModal) openingModal.style.display = "none";
+      });
+  }
+  window.addEventListener("click", (event) => {
+      if (event.target == openingModal) {
+          openingModal.style.display = "none";
+      }
+  });
+
+
+  // --- 4. 오프닝 페이지 전용 로직 (필터링 및 렌더링) ---
+  const openingGrid = document.getElementById("opening-grid");
+  const filterContainer = document.getElementById("filter-buttons-container");
+
+  // 오프닝 버튼 생성 및 모달 이벤트 연결 (오프닝 페이지 전용)
   function createOpeningButton(opening) {
       const btn = document.createElement("button");
       btn.className = "opening-btn";
@@ -92,32 +119,25 @@ $(function () {
           document.getElementById("modalTitle").textContent = opening.name;
           document.getElementById("modalPgn").textContent = opening.pgn;
           document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "설명 준비 중";
-          openingModal.style.display = "block";
+          if (openingModal) openingModal.style.display = "block";
       });
 
       return btn;
   }
   
-  // 선택된 필터에 따라 오프닝 목록을 렌더링하는 함수
+  // 선택된 필터에 따라 오프닝 목록을 렌더링하는 함수 (오프닝 페이지 전용)
   function renderOpenings(filterMove) {
       if (!openingGrid) return;
 
-      // 1. 기존 목록 비우기
       openingGrid.innerHTML = '';
       
-      // 2. 필터링
       const filteredOpenings = OPENINGS.filter(opening => {
           if (!opening.pgn || opening.name === "아직 오프닝이 아닙니다.") return false;
 
-          // 'All' 필터는 모든 항목을 통과시킴
           if (filterMove === 'All') return true;
-
-          // PGN이 필터링할 첫 수로 시작하는지 확인
-          // 1. e4, 1. d4, 1. c4, 1. Nf3 등 정확한 첫 수 비교
           return opening.pgn.startsWith(filterMove);
       });
 
-      // 3. 렌더링
       if (filteredOpenings.length === 0) {
           const p = document.createElement('p');
           p.textContent = `"${filterMove.replace('1. ', '')}"(으)로 시작하는 오프닝이 없습니다.`;
@@ -129,7 +149,6 @@ $(function () {
           });
       }
       
-      // 4. 필터 버튼 상태 업데이트 (Active 클래스 토글)
       document.querySelectorAll('.filter-btn').forEach(button => {
           button.classList.remove('active');
           if (button.getAttribute('data-filter') === filterMove) {
@@ -138,14 +157,13 @@ $(function () {
       });
   }
 
-  // 필터 버튼을 생성하고 이벤트를 연결하는 함수
+  // 필터 버튼을 생성하고 이벤트를 연결하는 함수 (오프닝 페이지 전용)
   function createFilterButtons() {
       if (!filterContainer) return;
 
       FILTER_MOVES.forEach(move => {
           const btn = document.createElement('button');
           btn.className = 'filter-btn';
-          // '1. e4' -> 'e4'로 표시, 'All' -> '전체보기'로 표시
           btn.textContent = move === 'All' ? '전체보기' : move.replace('1. ', '');
           
           btn.setAttribute('data-filter', move);
@@ -164,29 +182,9 @@ $(function () {
       renderOpenings('All'); // 초기에는 '전체보기' 목록 표시
   }
 
-  // 모달 닫기 이벤트
-  if (modalCloseBtn) {
-      modalCloseBtn.addEventListener("click", () => {
-          openingModal.style.display = "none";
-      });
-  }
-  // 모달 바깥 영역 클릭 시 닫기
-  window.addEventListener("click", (event) => {
-      if (event.target == openingModal) {
-          openingModal.style.display = "none";
-      }
-  });
-
-  // --- 4. 기타 UI 이벤트 핸들러 (사이드바) ---
-  if (hamburgerBtn) {
-    hamburgerBtn.addEventListener("click", function () {
-      sidebar.classList.toggle("close");
-      if(mainContent) mainContent.classList.toggle("shifted");
-    });
-  }
 
   // --- 5. 체스 게임 로직 가드 (Guard Clause) ---
-  // 체스판(myBoard)이 없거나 game 객체가 없으면 여기서 스크립트 종료하여 에러 방지
+  // 체스판(myBoard)이 없거나 game 객체가 없으면 여기서 스크립트 종료하여 오프닝 페이지와 분리
   if ($('#myBoard').length === 0 || !game) {
       return; 
   }
@@ -194,6 +192,48 @@ $(function () {
   // ----------------------------------------------------------------------
   // (이하 기존 체스 게임 로직: myBoard가 있는 페이지에서만 실행됨)
   // ----------------------------------------------------------------------
+
+  // [새 기능] 오프닝 이름 클릭 이벤트 핸들러
+  if ($openingName.length) {
+    $openingName.on('click', function() {
+        // 오프닝이 발견되었고, 모달이 있으며, PGN이 한 수 이상 진행되었을 때만 실행
+        if (currentOpening && openingModal && game.history().length > 0) { 
+            document.getElementById("modalTitle").textContent = currentOpening.name;
+            document.getElementById("modalPgn").textContent = currentOpening.pgn;
+            document.getElementById("modalDesc").textContent = currentOpening.desc ? currentOpening.desc : "설명 준비 중";
+            openingModal.style.display = "block";
+        }
+    });
+  }
+
+  // [수정] updateOpening 함수: currentOpening 변수에 오프닝 정보를 저장하고 클릭 클래스를 토글함
+  function updateOpening() {
+    const currentPgn = game.pgn();
+    let openingFound = false;
+    currentOpening = null; // 초기화
+
+    for (let i = 0; i < OPENINGS.length; i++) {
+      if (currentPgn.startsWith(OPENINGS[i].pgn)) {
+        $openingName.text(OPENINGS[i].name);
+        currentOpening = OPENINGS[i]; // 오프닝 객체 저장
+        openingFound = true;
+        break; 
+      }
+    }
+
+    if (!openingFound) {
+      $openingName.text("아직 오프닝이 아닙니다.");
+    }
+
+    // 오프닝이 발견되었고 (그리고 수가 한 수 이상 진행되었을 때) 클릭 가능하도록 클래스 추가/제거
+    if (currentOpening && game.history().length > 0) {
+        $openingName.addClass('clickable-opening-name');
+    } else {
+        $openingName.removeClass('clickable-opening-name');
+    }
+  }
+  
+  // (이하 기존 체스 게임 로직 함수들은 변경 없이 유지)
 
   function removeHighlights() {
     $board.find('.' + squareClass).removeClass('valid-move selected-square capture-target'); 
@@ -234,7 +274,7 @@ $(function () {
             board.position(game.fen()); 
             updateStatus();
             updatePgn();
-            updateOpening();
+            updateOpening(); // 수가 이동할 때마다 오프닝 업데이트
             return; 
         }
         
@@ -306,19 +346,6 @@ $(function () {
     updateOpening();
     removeHighlights();
     squareToHighlight = null;
-  }
-
-  function updateOpening() {
-    const currentPgn = game.pgn();
-    let openingFound = false;
-    for (let i = 0; i < OPENINGS.length; i++) {
-      if (currentPgn.startsWith(OPENINGS[i].pgn)) {
-        $openingName.text(OPENINGS[i].name);
-        openingFound = true;
-        break; 
-      }
-    }
-    if (!openingFound) $openingName.text("아직 오프닝이 아닙니다.");
   }
 
   function initBoard() {
