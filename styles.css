@@ -256,7 +256,37 @@ body {
 .rules-content-wrapper li { margin-bottom: 8px; }
 
 /* ... 기존 CSS 코드 유지 ... */
+/* --- 오프닝 필터 버튼 스타일 추가 --- */
+.filter-buttons-container {
+    margin-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap; /* 버튼이 많아지면 줄 바꿈 */
+    gap: 10px; /* 버튼 간 간격 */
+}
 
+.filter-btn {
+    padding: 8px 15px;
+    border: 2px solid #403d3d;
+    border-radius: 20px; /* 둥근 버튼 */
+    background-color: transparent;
+    color: #403d3d;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* 현재 선택된 버튼 스타일 */
+.filter-btn.active {
+    background-color: #403d3d;
+    color: white;
+    border-color: #403d3d;
+}
+
+.filter-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* (이하 기존 .opening-grid 및 .modal 스타일 유지) */
 /* --- 오프닝 페이지 스타일 추가 --- */
 
 /* 4열 그리드 레이아웃 */
@@ -347,3 +377,4 @@ body {
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
   }
+
