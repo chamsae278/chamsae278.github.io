@@ -254,3 +254,115 @@ body {
 .rules-content-wrapper tr:nth-child(even) { background-color: #f9f9f9; }
 .rules-content-wrapper ul { padding-left: 20px; }
 .rules-content-wrapper li { margin-bottom: 8px; }
+
+/* ... 기존 CSS 코드 유지 ... */
+
+/* --- 오프닝 페이지 스타일 추가 --- */
+
+/* 4열 그리드 레이아웃 */
+.opening-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 고정 */
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* 반응형: 모바일에서는 1열 또는 2열로 조정 */
+@media (max-width: 768px) {
+  .opening-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 오프닝 버튼 스타일 */
+.opening-btn {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s, background-color 0.2s;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.opening-btn:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+/* --- 팝업창(모달) 스타일 --- */
+.modal {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.close-modal {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-pgn-box {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 15px 0;
+  font-family: monospace;
+  border-left: 4px solid #403d3d;
+}
+
+.modal-desc-box {
+  line-height: 1.6;
+  color: #444;
+}
+
+#modalTitle {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
