@@ -39,21 +39,13 @@ body {
   background-color: #676767;
 }
 
-/* 🛠️ 변경사항: .content를 Flex-Row로 설정하여 체스판과 정보를 가로로 배치 */
 .content {
   background-color: #a6aaab;
   flex-grow: 1;
   padding: 40px;
   margin-left: 210px; 
   /* transition 제거 유지 */
-  
-  /* 💡 변경사항: 데스크톱에서 #myBoard와 정보 요소를 가로로 배치 */
-  display: flex;
-  flex-direction: row; 
-  align-items: flex-start; /* 상단 정렬 */
-  gap: 40px; /* 체스판과 정보 사이의 간격 */
 }
-
 .hamburger-btn {
   position: fixed;
   top: 15px;
@@ -292,35 +284,7 @@ body {
     flex-shrink: 0; /* 크기 고정 */
 }
 
-/* 💡 HTML 수정 없이 정보 요소를 세로로 묶는 것처럼 보이게 마진 조정 */
-.content > p, 
-.content > div, 
-.content > button {
-    /* .content의 직계 자식인 P, DIV, BUTTON의 상하 마진을 조정하여 세로로 뭉치게 합니다. */
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-/* 💡 개별 정보 요소 간 간격 추가 */
-.content > p {
-    margin-bottom: 10px; /* 상태 및 오프닝 p 태그 아래 간격 */
-}
-
-/* PGN 기록 컨테이너 너비 제어 */
-#pgn-container {
-  max-width: 400px; 
-  width: 100%; 
-  /* PGN 컨테이너 상단에 약간의 간격 */
-  margin-top: 10px;
-  margin-bottom: 0;
-}
-
-/* 💡 리셋 버튼 상단에 간격 추가 */
-#resetBtn {
-  margin-top: 15px; 
-  margin-bottom: 0;
-}
-
+/* game-info-wrapper: 정보 패널 내부 요소 (간격 10px 유지) */
 .game-info-wrapper {
     display: flex;
     flex-direction: column;
@@ -334,6 +298,16 @@ body {
     margin: 0; 
 }
 
+#resetBtn {
+    margin: 0; 
+}
+
+/* PGN 기록 컨테이너 너비 제어 */
+#pgn-container {
+  max-width: 400px; /* 길어지는 문제 해결을 위해 설정된 최대 너비 유지 */
+  width: 100%; 
+  margin: 0; 
+}
 
 /* 👇 리셋 버튼 스타일 */
 .action-button {
@@ -494,24 +468,11 @@ body {
     margin-left: 0;
     padding: 20px; 
     display: flex; 
-    /* 💡 모바일에서는 다시 세로 배치 */
     flex-direction: column; 
     align-items: center; 
-    gap: 20px;
-  }
-  
-  /* 🛠️ 모바일: 정보 요소 마진 초기화 및 재설정 */
-  .content > p {
-    margin-bottom: 5px; 
-  }
-  #pgn-container {
-    margin-top: 10px;
-  }
-  #resetBtn {
-    margin-top: 15px;
   }
 
-  /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 (모바일) */
+  /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 */
   .board-and-status-container {
       display: flex; /* Flex로 변경 유지 */
       flex-direction: column; /* 세로 배치로 변경 */
@@ -553,4 +514,4 @@ body {
   .board-and-status-container, #pgn-container {
     max-width: 100%;
   }
-}
+  }
