@@ -59,7 +59,7 @@ $(function () {
     
     // Sicilian (1. e4)
     { pgn: "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6", name: "Sicilian: Najdorf", desc: "시실리안 디펜스 중 가장 유명하고 복잡한 라인입니다. 바비 피셔와 카스파로프가 애용했습니다." },
-    { pgn: "1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6", name: "Sicilian: Dragon", desc: "흑의 비숍을 g7으로 피앙케토하여 대각선을 장악합니다. 서로 반대쪽 캐슬링 후 격렬한 공격이 이어집습니다." },
+    { pgn: "1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6", name: "Sicilian: Dragon", desc: "흑의 비숍을 g7으로 피앙케토하여 대각선을 장악합니다. 서로 반대쪽 캐슬링 후 격렬한 공격이 이어집니다." },
     { pgn: "1. e4 c5", name: "Sicilian Defense", desc: "1.e4에 대한 가장 인기 있고 승률이 높은 흑의 대응입니다. 불균형한 포지션을 만들어 승부를 봅니다." },
     
     // French & Caro-Kann (1. e4)
@@ -119,6 +119,7 @@ $(function () {
   // 오프닝 이름 클릭 시 모달 열기 (Index.html 페이지 전용)
   if ($openingName && $openingName.length) {
       $openingName.on('click', function() {
+          // currentOpening이 null이 아니고, 유효한 오프닝 정보를 가지고 있을 때만 모달을 띄웁니다.
           if (currentOpening) {
               document.getElementById("modalTitle").textContent = currentOpening.name;
               document.getElementById("modalPgn").textContent = currentOpening.pgn;
@@ -149,11 +150,15 @@ $(function () {
   // 선택된 필터에 따라 오프닝 목록을 렌더링하는 함수 (오프닝 페이지 전용)
   function renderOpenings(filterMove) {
       if (!openingGrid) return;
+
       openingGrid.innerHTML = '';
-      
+
       const filteredOpenings = OPENINGS.filter(opening => {
           if (!opening.pgn || opening.name === "아직 오프닝이 아닙니다.") return false;
+          
           if (filterMove === 'All') return true;
+          
+          // 오프닝 PGN이 필터링할 첫 수로 시작하는지 확인
           return opening.pgn.startsWith(filterMove);
       });
 
@@ -178,332 +183,304 @@ $(function () {
   }
 
   // 필터 버튼을 생성하고 이벤트를 연결하는 함수 (오프닝 페이지 전용)
-  function createFilterButtons() {
+  function setupOpeningFilters() {
       if (!filterContainer) return;
+      
       FILTER_MOVES.forEach(move => {
           const btn = document.createElement('button');
           btn.className = 'filter-btn';
-          btn.textContent = move === 'All' ? '전체보기' : move.replace('1. ', '');
+          btn.textContent = move === 'All' ? '전체' : move;
           btn.setAttribute('data-filter', move);
-          btn.addEventListener('click', () => {
+          
+          btn.addEventListener('click', function() {
               renderOpenings(move);
           });
+          
           filterContainer.appendChild(btn);
       });
+
+      // 초기 렌더링
+      renderOpenings('All');
   }
 
-  // 오프닝 페이지 로드 시 초기화
-  if (openingGrid) {
-      createFilterButtons();
-      renderOpenings('All'); // 초기에는 '전체보기' 목록 표시
+  // 오프닝 페이지에 있다면 필터와 목록을 설정합니다.
+  if (openingGrid && filterContainer) {
+      setupOpeningFilters();
   }
-  
-  // --- 5. 체스 게임 로직 가드 (Index.html 전용) --- 
-  // 체스판(myBoard)이 없거나 game 객체가 없으면 여기서 스크립트 종료하여 다른 페이지(규칙, 오프닝) 로직만 실행
-  if ($('#myBoard').length === 0 || !game) {
-      // Index.html이 아닐 경우, 여기서 함수 종료
-      // 아래 6번 목차 로직만 별도로 실행됩니다.
-  } else {
-      // ----------------------------------------------------------------------
-      // (Index.html: 기존 체스 게임 로직)
-      // ----------------------------------------------------------------------
 
-      // ... (기존 onDragStart, onDrop, updateStatus, updatePgn, updateOpening, resetGame 등 함수들이 여기에 위치) ...
-      
-      // 기물 이동 시작 시 처리
-      function onDragStart (source, piece, position, orientation) {
-        if (game.game_over()) return false
-      
-        if ((game.turn() === 'w' && piece.search(/^w/) === -1) ||
-            (game.turn() === 'b' && piece.search(/^b/) === -1)) {
-          return false
-        }
-      }
-      
-      // 기물 드롭 시 처리
-      function onDrop (source, target) {
-        // 이동 시도
-        var move = game.move({
-          from: source,
-          to: target,
-          promotion: 'q' // 폰 승급 시 항상 퀸으로 가정
-        })
-      
-        // 불법적인 이동인 경우 snapback
-        if (move === null) return 'snapback'
-        
-        updateStatus()
-        updatePgn()
-        updateOpening()
-      }
-      
-      // 보드 상태 업데이트
-      function updateStatus () {
-        var status = ''
-      
-        var moveColor = '백'
-        if (game.turn() === 'b') {
-          moveColor = '흑'
-        }
-      
-        // 체크메이트 확인
-        if (game.in_checkmate()) {
-          status = '게임 종료, ' + moveColor + ' 체크메이트 패배.'
-        }
-      
-        // 스테일메이트 (무승부) 확인
-        else if (game.in_draw()) {
-          status = '게임 종료, 무승부 (Draw).'
-        }
-      
-        // 체크 확인
-        else if (game.in_check()) {
-          status = moveColor + ' 차례, 체크! (Check!)'
-        }
-      
-        // 게임 진행 중
-        else {
-          status = moveColor + ' 차례'
-        }
-      
-        $status.html(status)
-      }
 
-      // PGN 업데이트
-      function updatePgn() {
-        var pgn = game.pgn();
-        // 줄 바꿈을 포함하여 보기 좋게 포맷
-        var normalizedPgn = pgn.replace(/\s+/g, ' ');
-        var formattedPgn = normalizedPgn.replace(/ (\d+\.)/g, '\n$1').trim();
-        $pgnText.text(formattedPgn); 
-      }
+  // --- 5. 체스 게임 로직 (index.html 전용) ---
 
-      // 오프닝 업데이트
-      function updateOpening() {
-          const currentMoves = game.history().join(' ');
-          let bestMatch = null;
-          
-          // 가장 긴 PGN을 가진 오프닝부터 찾습니다 (가장 구체적인 오프닝)
-          const sortedOpenings = OPENINGS.sort((a, b) => b.pgn.length - a.pgn.length);
+  // 이동할 수 있는 칸에 하이라이트 표시
+  function highlightMoves (source, moves) {
+    if (moves.length === 0) return;
+    
+    // 현재 선택한 칸 하이라이트 (노란색)
+    $board.find('.' + squareClass).removeClass('highlight-square');
+    $board.find('.square-' + source).addClass('highlight-square-selected');
+    
+    // 이동 가능한 칸 하이라이트 (초록색)
+    for (var i = 0; i < moves.length; i++) {
+        var targetSquare = moves[i].to;
+        $board.find('.square-' + targetSquare).addClass('highlight-square-move');
+    }
+  }
 
-          for (const opening of sortedOpenings) {
-              if (currentMoves.startsWith(opening.pgn)) {
-                  bestMatch = opening;
-                  break;
-              }
-          }
+  // 하이라이트 제거
+  function removeHighlights () {
+    $board.find('.highlight-square-selected').removeClass('highlight-square-selected')
+    $board.find('.highlight-square-move').removeClass('highlight-square-move')
+  }
 
-          if (bestMatch) {
-              currentOpening = bestMatch;
-              $openingName.text(currentOpening.name);
-          } else {
-              currentOpening = null;
-              $openingName.text('아직 오프닝이 아닙니다.');
-          }
+  // 체스 기물이 움직이기 전에 처리 (유효성 검사)
+  function onDragStart (source, piece, position, orientation) {
+    // 게임 종료 시, 혹은 백/흑 차례가 아닌 기물을 잡을 경우 이동 방지
+    if (game.game_over() ||
+        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+      return false
+    }
+  }
 
-          // 오프닝 이름에 클릭 가능 클래스 추가/제거
-          if (currentOpening) {
-              $openingName.addClass('clickable-opening-name');
-          } else {
-              $openingName.removeClass('clickable-opening-name');
-          }
-      }
+  // 기물 드롭 시 처리
+  function onDrop (source, target) {
+    // 이동 시도
+    var move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q' // 폰 승급 시 항상 퀸으로 가정
+    })
+
+    // 불법적인 이동인 경우 snapback
+    if (move === null) return 'snapback'
+
+    updateStatus()
+    updatePgn()
+    updateOpening() // 오프닝 업데이트
+  }
+
+  // 클릭으로 이동 처리
+  function onSquareClick (square) {
+      var $target = $board.find('.square-' + square);
+      var piece = game.get(square);
       
-      // 하이라이트 제거
-      function removeHighlights() {
-        $board.find('.' + squareClass).removeClass('valid-move selected-square capture-target');
-        $board.find('.piece-417db').removeClass('selected-piece');
-        $board.find('.' + squareClass).css('box-shadow', '');
-      }
-      
-      // 이동 가능한 칸 하이라이트
-      function highlightMoves(square, moves) {
-        $board.find('.square-' + square).addClass('selected-square');
-        $board.find('.square-' + square + ' .piece-417db').addClass('selected-piece');
-
-        for (var i = 0; i < moves.length; i++) {
-          const targetSquare = moves[i].to;
-          $board.find('.square-' + targetSquare).addClass('valid-move');
-          
-          // 잡을 수 있는 기물이 있는 경우 특별 강조
-          const pieceOnTarget = game.get(targetSquare);
-          if (pieceOnTarget && pieceOnTarget.color !== game.turn()) {
-            $board.find('.square-' + targetSquare).addClass('capture-target');
-          }
-        }
-      }
-      
-      // 칸 클릭 시 이동 처리 (클릭 이동 로직)
-      function onSquareClick(event) {
-        if (game.game_over()) return;
-        if (event.type === 'touchend') event.preventDefault();
-
-        var $target = $(event.currentTarget);
-        var square = $target.data('square');
-        var piece = game.get(square);
-        
-        // 1. 현재 기물 선택 (혹은 다른 기물 선택)
-        if (piece && piece.color === game.turn()) {
+      // 1. 현재 기물 선택 (혹은 다른 기물 선택)
+      if (piece && piece.color === game.turn()) {
           removeHighlights();
           squareToHighlight = square;
-          var moves = game.moves({ square: square, verbose: true });
+          var moves = game.moves({
+              square: square,
+              verbose: true
+          });
           highlightMoves(square, moves);
           return;
-        }
-        
-        // 2. 이전에 선택된 기물이 있고, 현재 칸이 이동 가능한 칸일 때 이동 실행
-        if (squareToHighlight !== null) {
+      }
+
+      // 2. 이전에 선택된 기물이 있고, 현재 칸이 이동 가능한 칸일 때 이동 실행
+      if (squareToHighlight !== null) {
           var move = game.move({
-            from: squareToHighlight,
-            to: square,
-            promotion: 'q' // 폰 승급 시 항상 퀸으로 가정
+              from: squareToHighlight,
+              to: square,
+              promotion: 'q' // 폰 승급 시 항상 퀸으로 가정
           });
 
           // 합법적인 이동인 경우
           if (move !== null) {
-            board.position(game.fen());
-            squareToHighlight = null;
-            removeHighlights();
-            updateStatus();
-            updatePgn();
-            updateOpening();
-            return;
+              board.position(game.fen());
+              squareToHighlight = null;
+              removeHighlights();
+              updateStatus();
+              updatePgn();
+              updateOpening(); // 오프닝 업데이트
+              return;
           }
-        }
-        
-        // 3. 선택 해제
-        squareToHighlight = null;
-        removeHighlights();
       }
-      
-      // 게임 리셋 버튼 이벤트
-      if (resetBtn) {
-        resetBtn.addEventListener('click', resetGame);
-      }
-      
-      // 게임 리셋
-      function resetGame() {
-        game.reset();
-        board.position(game.fen());
-        updateStatus();
-        updatePgn();
-        updateOpening();
-        removeHighlights();
-        squareToHighlight = null;
-      }
-      
-      // 보드 초기화 및 리사이즈 로직
-      function initBoard() {
-        var screenWidth = $(window).width();
-        var boardSize;
-        
-        // 체스판 크기 조정: 데스크톱 645px, 모바일 최대 500px
-        if (screenWidth <= 768) {
-            boardSize = Math.min(screenWidth * 0.9, 500); 
-        } else {
-            boardSize = 645; 
-        }
 
-        var config = {
-          draggable: false, 
-          position: 'start',
-          onDragStart: onDragStart, 
-          onDrop: onDrop, // onDrop 함수 연결
-          pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
-          onSnapEnd: updateStatus // 스냅 종료 후 상태 업데이트
-        };
-
-        var $boardDiv = $('#myBoard');
-        $boardDiv.css('width', boardSize + 'px');
-
-        board = Chessboard('myBoard', config);
-        
-        // 클릭 이벤트 리스너 연결
-        $('#myBoard').on('click touchend', '.square-55d63', onSquareClick);
-
-        // 창 크기가 변경될 때마다 보드 크기를 재설정
-        $(window).on('resize', function() {
-            var newScreenWidth = $(window).width();
-            var newBoardSize;
-            
-            if (newScreenWidth <= 768) {
-                newBoardSize = Math.min(newScreenWidth * 0.9, 500); 
-            } else {
-                newBoardSize = 645;
-            }
-            $boardDiv.css('width', newBoardSize + 'px');
-            board.resize(); // 보드 객체의 리사이즈 호출
-        });
-        
-        updateStatus();
-        updateOpening();
-        updatePgn();
-      }
-      
-      // 보드 초기화 시작
-      initBoard();
-      
-      // ----------------------------------------------------------------------
-      // (Index.html: 기존 체스 게임 로직 끝)
-      // ----------------------------------------------------------------------
+      // 3. 선택 해제
+      squareToHighlight = null;
+      removeHighlights();
   }
-  
 
-// --- 6. [새 기능] 규칙 페이지 목차 생성 및 스크롤 로직 (Index.html이 아닐 때도 실행) ---
-  
-  const rulesContentWrapper = document.querySelector('.rules-content-wrapper');
-  const tocList = document.getElementById('tocList');
-  
-  if (rulesContentWrapper && tocList) {
+
+  // 보드 상태 업데이트
+  function updateStatus () {
+    var status = ''
+    var moveColor = '백'
+    if (game.turn() === 'b') {
+      moveColor = '흑'
+    }
+
+    // 체크메이트 확인
+    if (game.in_checkmate()) {
+      status = '게임 종료, ' + moveColor + ' 체크메이트 패배.'
+    }
+    // 스테일메이트 (무승부) 확인
+    else if (game.in_draw()) {
+      status = '게임 종료, 무승부 (Draw).'
+    }
+    // 체크 확인
+    else if (game.in_check()) {
+      status = moveColor + ' 차례, 체크! (Check!)'
+    }
+    // 게임 진행 중
+    else {
+      status = moveColor + ' 차례'
+    }
+    $status.html(status)
+  }
+
+  // PGN 업데이트
+  function updatePgn() {
+    var pgn = game.pgn();
+    // 줄 바꿈을 포함하여 보기 좋게 포맷 (1. e4 e5 2. Nf3 Nc6 -> 1. e4 e5\n2. Nf3 Nc6)
+    var normalizedPgn = pgn.replace(/\s+/g, ' ');
+    var formattedPgn = normalizedPgn.replace(/ (\d+\.)/g, '\n$1').trim();
+    $pgnText.text(formattedPgn);
+  }
+
+  // 💡 오프닝 업데이트 함수 (수정된 로직)
+  function updateOpening() {
+      const history = game.history();
+      let currentPgn = "";
+
+      // 1. 현재 게임 기록을 "1. e4 e5 2. Nf3 Nc6 ..." 형식의 문자열로 변환
+      for (let i = 0; i < history.length; i++) {
+          // 백의 차례(짝수 인덱스 0, 2...)일 때 앞에 번호 붙임
+          if (i % 2 === 0) {
+              currentPgn += (Math.floor(i / 2) + 1) + ". ";
+          }
+          currentPgn += history[i] + " ";
+      }
+      currentPgn = currentPgn.trim(); // 마지막 공백 제거
+
+      let bestMatch = null;
+      
+      // 2. 변환된 PGN 문자열과 오프닝 데이터 비교
+      // 가장 긴 PGN을 가진 오프닝부터 찾습니다 (더 구체적인 오프닝 우선)
+      const sortedOpenings = OPENINGS.sort((a, b) => b.pgn.length - a.pgn.length);
+
+      for (const opening of sortedOpenings) {
+          // startsWith를 사용하여 현재 진행된 수순이 오프닝 데이터와 일치하는지 확인
+          if (currentPgn.startsWith(opening.pgn)) {
+              bestMatch = opening;
+              break; // 가장 긴(상세한) 일치 항목을 찾으면 중단
+          }
+      }
+
+      if (bestMatch) {
+          currentOpening = bestMatch;
+          $openingName.text(currentOpening.name);
+      } else {
+          currentOpening = null;
+          $openingName.text('아직 오프닝이 아닙니다.');
+      }
+
+      // 오프닝 이름에 클릭 가능 클래스 추가/제거 (모달을 띄울 수 있도록)
+      if (currentOpening) {
+          $openingName.addClass('clickable-opening-name');
+      } else {
+          $openingName.removeClass('clickable-opening-name');
+      }
+  }
+
+
+  // 게임 리셋 버튼 이벤트
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetGame);
+  }
+
+  // 게임 리셋
+  function resetGame() {
+    game.reset();
+    board.position(game.fen());
+    updateStatus();
+    updatePgn();
+    updateOpening();
+    removeHighlights();
+    squareToHighlight = null;
+  }
+
+  // 보드 초기화 및 리사이즈 로직
+  function initBoard() {
     
-      /**
-       * 규칙 페이지의 <h2>와 <h3> 태그를 기반으로 목차를 생성하고 이벤트를 연결합니다.
-       */
-      function generateTOC() {
-          // rules-content-wrapper 내의 모든 h2, h3 태그를 찾습니다.
-          const headers = rulesContentWrapper.querySelectorAll('h2, h3');
-          
-          headers.forEach((header, index) => {
-              // 1. ID가 없으면 동적으로 ID 할당 (목차 링크의 타겟)
-              if (!header.id) {
-                  // 한글 텍스트도 ID에 포함되도록 허용하고 공백을 하이픈으로 대체
-                  const safeText = header.textContent.trim().replace(/[^a-z0-9가-힣]+/gi, '-');
-                  header.id = `section-${safeText}-${index}`;
-              }
-              
-              // 2. 목차 항목 생성
-              const listItem = document.createElement('li');
-              const link = document.createElement('a');
-              
-              link.textContent = header.textContent.trim();
-              link.href = `#${header.id}`;
-              
-              // 3. 클래스 추가 (h2/h3 레벨 구분)
-              if (header.tagName === 'H3') {
-                  listItem.classList.add('h3-level');
-              }
-              
-              // 4. 스크롤 이벤트 연결 (앵커 태그 기본 동작 방지 및 부드러운 스크롤 적용)
-              $(link).on('click', function(e) {
-                  e.preventDefault(); // 기본 앵커 동작 방지
-                  const targetId = $(this).attr('href');
-                  
-                  // 스크롤 시 상단 여백 (fixed/sticky 헤더가 있을 경우를 고려하여 60px 설정)
-                  const scrollOffset = 60; 
-                  
-                  $('html, body').animate({
-                      scrollTop: $(targetId).offset().top - scrollOffset
-                  }, 500); // 500ms 동안 부드럽게 스크롤
-              });
-
-              listItem.appendChild(link);
-              tocList.appendChild(listItem);
-          });
-      }
-
-      // 규칙 페이지 로드 시 목차 생성
-      generateTOC();
+    var boardConfig = {
+      draggable: true,
+      position: 'start',
+      onDragStart: onDragStart,
+      onDrop: onDrop,
+      onSnapEnd: updatePgn,
+      onSquareClick: onSquareClick // 클릭 이동 활성화
+    }
+    
+    // #myBoard 요소가 존재하는 경우에만 보드를 초기화
+    if ($board.length) {
+        board = Chessboard('myBoard', boardConfig);
+        $(window).resize(board.resize); // 윈도우 크기 변경 시 보드 크기 조정
+        updateStatus();
+        updatePgn();
+        updateOpening();
+    }
+  }
+  
+  // DOM이 로드된 후 체스보드 초기화 (index.html에서만)
+  if ($board.length) {
+    initBoard();
   }
 
 
-}); // $(function() 끝
+  // --- 6. TOC (목차) 로직 (규칙, 용어 페이지 전용) ---
+  
+  // 목차를 생성하는 함수
+  function createTOC() {
+      const tocList = document.getElementById('toc-list');
+      const contentWrapper = document.querySelector('.rules-content-wrapper'); // 규칙/용어 내용 컨테이너
+
+      if (!tocList || !contentWrapper) return; // 목차 요소가 없으면 실행하지 않음
+
+      // h2, h3 제목 태그들을 찾습니다.
+      const headers = contentWrapper.querySelectorAll('h2, h3');
+
+      headers.forEach((header, index) => {
+          // 1. ID 할당 (목차 링크의 타겟)
+          if (!header.id) {
+              // 한글 텍스트도 ID에 포함되도록 허용하고 공백을 하이픈으로 대체
+              const safeText = header.textContent.trim().replace(/[^a-z0-9가-힣]+/gi, '-');
+              header.id = `section-${safeText}-${index}`;
+          }
+          
+          // 2. 목차 항목 생성
+          const listItem = document.createElement('li');
+          const link = document.createElement('a');
+          
+          link.textContent = header.textContent.trim();
+          link.href = `#${header.id}`;
+          
+          // 3. 클래스 추가 (h2/h3 레벨 구분)
+          if (header.tagName === 'H3') {
+              listItem.classList.add('h3-level');
+          }
+          
+          // 4. 스크롤 이벤트 연결 (앵커 태그 기본 동작 방지 및 부드러운 스크롤 적용)
+          $(link).on('click', function(e) {
+              e.preventDefault(); // 기본 앵커 동작 방지
+              const targetId = $(this).attr('href');
+              
+              // 스크롤 시 상단 여백 (fixed/sticky 헤더가 있을 경우를 고려하여 60px 설정)
+              const scrollOffset = 60; 
+              
+              $('html, body').animate({
+                  scrollTop: $(targetId).offset().top - scrollOffset
+              }, 500); // 500ms 동안 부드럽게 스크롤
+          });
+
+          listItem.appendChild(link);
+          tocList.appendChild(listItem);
+      });
+  }
+
+  // 규칙 및 용어 페이지에만 목차 생성 함수를 실행합니다.
+  if (document.getElementById('toc-list')) {
+      createTOC();
+  }
+
+});
