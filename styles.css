@@ -260,21 +260,20 @@ body {
 /* --- 오프닝 페이지 스타일 추가 --- */
 
 /* 4열 그리드 레이아웃 */
+/* --- 오프닝 페이지 스타일 --- */
 .opening-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4열 고정 */
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-top: 20px;
 }
 
-/* 반응형: 모바일에서는 1열 또는 2열로 조정 */
 @media (max-width: 768px) {
   .opening-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* 오프닝 버튼 스타일 */
 .opening-btn {
   background-color: #f0f0f0;
   border: none;
@@ -287,11 +286,7 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   transition: transform 0.2s, background-color 0.2s;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  word-break: keep-all;
+  width: 100%; /* 너비 꽉 채우기 */
 }
 
 .opening-btn:hover {
@@ -299,16 +294,16 @@ body {
   transform: translateY(-2px);
 }
 
-/* --- 팝업창(모달) 스타일 --- */
+/* 팝업창(모달) */
 .modal {
-  display: none; /* 기본적으로 숨김 */
+  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 */
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
@@ -320,12 +315,6 @@ body {
   max-width: 500px;
   position: relative;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .close-modal {
@@ -337,13 +326,6 @@ body {
   position: absolute;
   top: 10px;
   right: 20px;
-}
-
-.close-modal:hover,
-.close-modal:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .modal-pgn-box {
@@ -362,7 +344,6 @@ body {
 
 #modalTitle {
   margin-top: 0;
-  color: #333;
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
-}
+  }
