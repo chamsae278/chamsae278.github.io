@@ -18,6 +18,7 @@ body {
   left: 0;
   height: 100%;
   z-index: 100;
+  /* transition 제거 유지 */
 }
 
 .sidebar ul {
@@ -38,20 +39,90 @@ body {
   background-color: #676767;
 }
 
-/* 🛠️ 변경사항: 체스판과 모든 정보 요소가 가로로 흐르도록 설정 */
+/* 🛠️ 변경사항: .content를 Flex-Row로 설정하여 체스판과 정보를 가로로 배치 */
 .content {
   background-color: #a6aaab;
   flex-grow: 1;
   padding: 40px;
   margin-left: 210px; 
+  /* transition 제거 유지 */
   
-  /* Flexbox 설정 */
+  /* 💡 변경사항: 데스크톱에서 #myBoard와 정보 요소를 가로로 배치 */
   display: flex;
-  flex-direction: row; /* 가로 방향 배치 */
-  flex-wrap: wrap;     /* 💡 공간이 부족하면 줄바꿈 허용 (중요) */
+  flex-direction: row; 
   align-items: flex-start; /* 상단 정렬 */
-  gap: 30px; /* 요소들 사이의 간격 */
+  gap: 40px; /* 체스판과 정보 사이의 간격 */
 }
+
+/* 💡 새로 추가된 정보 패널 스타일 (오른쪽 영역) */
+.game-info-panel {
+    display: flex;
+    flex-direction: column; /* 패널 내부의 요소들은 세로로 쌓임 */
+    gap: 20px; /* 요소 간 간격 */
+    flex-grow: 1; /* 남은 공간 차지 */
+    max-width: 400px; /* 정보 패널이 너무 넓어지지 않게 제한 */
+    min-width: 300px;
+}
+
+.status-box p {
+    margin: 5px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #212121;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.clickable-opening-name {
+    color: #007bff; /* 클릭 가능함을 시각적으로 표시 */
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.clickable-opening-name:hover {
+    color: #0056b3;
+}
+
+#pgn-container {
+  width: 100%; 
+  margin: 0;
+}
+
+#pgn-container h3 {
+  color: #212121; 
+  margin-top: 0; 
+  margin-bottom: 5px;
+}
+
+#pgn-text {
+  background-color: #212121; 
+  color: #ffffff; 
+  border: 1px solid #333; 
+  border-radius: 10px; 
+  padding: 15px;
+  font-family: monospace; 
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-y: auto; 
+  max-height: 300px; /* 높이 제한 */
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+#resetBtn {
+  width: 100%; /* 버튼을 패널 너비에 맞춤 */
+  padding: 15px;
+}
+
+#myBoard {
+  margin-top: 0; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  border: none !important;
+  flex-shrink: 0; /* 체스판 크기는 줄어들지 않음 */
+}
+
 
 .hamburger-btn {
   position: fixed;
@@ -63,6 +134,7 @@ body {
   cursor: pointer;
   color: #333;
   z-index: 200;
+  /* transition 제거 유지 */
 }
 
 /* 사이드바가 닫혔을 때 */
@@ -70,33 +142,65 @@ body {
 .sidebar.close + .hamburger-btn { left: 20px; }
 .content.shifted { margin-left: 0; }
 
+/* 👇 리셋 버튼 스타일 */
+.action-button { 
+    background-color: #f77765; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px 20px; 
+    width: auto; /* 너비 고정 유지 */ 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    transition: background-color 0.2s, transform 0.1s; 
+    box-shadow: 0 4px #d84315; 
+} 
+
+.action-button:hover { 
+    background-color: #d84315; 
+} 
+
+.action-button:active { 
+    background-color: #c0392b; 
+    box-shadow: 0 2px #c0392b; 
+    transform: translateY(2px); 
+}
+
+
 /* -------------------------------------------------------------------------- */
 /* Rules Page & TOC Styles                         */
 /* -------------------------------------------------------------------------- */
 
+/* 목차(TOC) 레이아웃을 위한 새로운 컨테이너 스타일 */
 .rules-page-container {
-    display: flex; 
-    align-items: flex-start; 
+    display: flex; /* 내용과 목차를 가로로 배치 */
+    align-items: flex-start; /* 상단 정렬 */
     width: 100%;
 }
 
 .rules-content-wrapper { 
-    max-width: 700px; 
+    max-width: 700px; /* 목차 공간 확보를 위해 너비를 줄임 */
     flex-grow: 1; 
-    margin-right: 30px; 
+    margin-right: 30px; /* 목차와의 간격 확보 */
 }
 
+/* 스크롤 이동 시 헤더가 상단에 붙을 때 공간 확보 */
 .rules-content-wrapper h2 { 
     padding-top: 10px; 
 }
 
-/* --- 목차 사이드바 스타일 --- */
+
+/* --- 목차 사이드바 스타일 (스크롤 고정) --- */
 .toc-sidebar {
-    width: 250px; 
+    width: 250px; /* 목차 너비 */
     flex-shrink: 0;
+    
+    /* 스크롤을 따라다니게 하는 핵심 스타일 */
     position: sticky; 
-    top: 60px; 
-    align-self: flex-start; 
+    top: 60px; /* 상단으로부터 띄울 간격 (상단 메뉴와 겹치지 않도록) */
+    align-self: flex-start; /* 래퍼 내에서 상단에 고정 */
+
     padding: 15px;
     background-color: #f5f5f5;
     border-left: 3px solid #403d3d;
@@ -134,6 +238,7 @@ body {
     text-decoration: underline;
 }
 
+/* 목차의 2단계 항목 (h3) 스타일 */
 .toc-sidebar li.h3-level {
     padding-left: 15px;
     font-size: 0.9em;
@@ -147,14 +252,14 @@ body {
 .filter-buttons-container {
     margin-bottom: 25px;
     display: flex;
-    flex-wrap: wrap; 
-    gap: 10px; 
+    flex-wrap: wrap; /* 버튼이 많아지면 줄 바꿈 */
+    gap: 10px; /* 버튼 간 간격 */
 }
 
 .filter-btn {
     padding: 8px 15px;
     border: 2px solid #403d3d;
-    border-radius: 20px; 
+    border-radius: 20px; /* 둥근 버튼 */
     background-color: transparent;
     color: #403d3d;
     font-weight: bold;
@@ -162,6 +267,7 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 
+/* 현재 선택된 버튼 스타일 */
 .filter-btn.active {
     background-color: #403d3d;
     color: white;
@@ -187,7 +293,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: transform 0.2s, background-color 0.2s;
     height: 100%;
-    width: 100%; 
+    width: 100%; /* 너비 꽉 채우기 */
 }
 
 .opening-btn:hover {
@@ -210,11 +316,11 @@ body {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto; 
+    margin: 10% auto; /* 상하 10%, 좌우 자동 */
     padding: 20px;
     border-radius: 10px;
     width: 80%;
-    max-width: 600px; 
+    max-width: 600px; /* 최대 너비 */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     color: #333;
@@ -243,10 +349,6 @@ body {
 
 .modal-pgn-box, .modal-desc-box {
     margin-top: 15px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fafafa;
 }
 
 .modal-pgn-box strong, .modal-desc-box strong {
@@ -255,225 +357,69 @@ body {
     color: #403d3d;
 }
 
-.modal-pgn-box .pgn-text {
+.pgn-text {
+    background-color: #eee;
+    padding: 10px;
+    border-radius: 5px;
     font-family: monospace;
     white-space: pre-wrap;
-    margin: 0;
-    font-size: 14px;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Index Page Styles (Chessboard & Info)           */
-/* -------------------------------------------------------------------------- */
-
-/* board-and-status-container: (HTML 수정 시 사용됨, 여기서는 스타일 보조) */
-.board-and-status-container {
-  display: flex;
-  flex-direction: row; 
-  align-items: flex-start; 
-  gap: 20px;
-  width: auto; 
-}
-
-#myBoard {
-    margin-top: 0; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-    border: none !important;
-    flex-shrink: 0; /* 체스판 크기 고정 */
-}
-
-/* 💡 정보 요소(상태, 오프닝) 스타일 최적화 */
-.content > p {
-    margin: 0;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.5); /* 가독성을 위한 배경 */
-    border-radius: 5px;
-    color: #212121;
-    font-size: 16px;
-    font-weight: bold;
-    /* 중요: 옆으로 나열되도록 너비 제한 해제 */
-    width: auto; 
-    display: inline-block;
-}
-
-/* 💡 PGN 컨테이너: 가로 배치되도록 너비 조정 */
-#pgn-container {
-  width: auto; /* 100% 제거 -> 내용물만큼만 차지하거나 남은 공간 차지 */
-  min-width: 250px; /* 너무 작아지지 않게 */
-  max-width: 400px; 
-  margin: 0;
-}
-
-/* 💡 리셋 버튼: 가로 배치되도록 조정 */
-#resetBtn {
-  margin: 0; 
-  height: fit-content; /* 높이 맞춤 */
-}
-
-.action-button {
-  background-color: #f77765; 
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  width: auto; 
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: background-color 0.2s, transform 0.1s;
-  box-shadow: 0 4px #d84315; 
-}
-
-.action-button:hover { background-color: #d84315; }
-.action-button:active {
-  background-color: #c0392b; 
-  box-shadow: 0 2px #c0392b; 
-  transform: translateY(2px);
-}
-
-#status {
-  font-weight: bold;
-  color: #000; 
-}
-
-/* --- PGN (게임 기록) 스타일 --- */
-#pgn-container h3 {
-  color: #212121; 
-  margin-top: 0; 
-  margin-bottom: 5px;
-}
-
-#pgn-text {
-  background-color: #212121; 
-  color: #ffffff; 
-  border: 1px solid #333; 
-  border-radius: 10px; 
-  padding: 15px;
-  font-family: monospace; 
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-y: auto; 
-  max-height: 250px; 
-  white-space: pre-wrap;
-}
-
-.clickable-opening-name {
-  color: #007bff;
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.clickable-opening-name:hover {
-  color: #0056b3;
-}
-
-/* --- 기물/칸 선택 효과 --- */
-.piece-417db.selected-piece {
-  transition: transform 0.15s ease-out;
-  transform: scale(1.15) translateY(-5%);
-  z-index: 999;
-  box-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
-  border-radius: 50%; 
-}
-
-.square-55d63.selected-square { background-color: #ffe082 !important; }
-.square-55d63.valid-move { background-color: #a5d6a7 !important; }
-.square-55d63.capture-target { box-shadow: inset 0 0 0 5px #f06292; }
-
-/* --- 용어 페이지 테이블 스타일 --- */
-.rules-content-wrapper table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    font-size: 15px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.rules-content-wrapper th, .rules-content-wrapper td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-
-.rules-content-wrapper th {
-    background-color: #f2f2f2;
-    color: #403d3d;
-    font-weight: bold;
-}
-
-.rules-content-wrapper tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.rules-content-wrapper ul { padding-left: 20px; }
-.rules-content-wrapper li { margin-bottom: 8px; }
-
-/* -------------------------------------------------------------------------- */
-/* Mobile Responsive Design                        */
+/* Mobile Responsive Design */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1000px) {
-    .rules-page-container { flex-direction: column; }
-    .rules-content-wrapper { margin-right: 0; max-width: 100%; order: 2; }
-    .toc-sidebar { width: 100%; position: static; top: auto; margin-bottom: 20px; order: 1; }
+    .rules-page-container {
+        flex-direction: column; /* 목차와 내용을 세로로 쌓음 */
+    }
+    .rules-content-wrapper {
+        margin-right: 0;
+        max-width: 100%;
+        order: 2; /* 내용을 아래로 이동 */
+    }
+    .toc-sidebar {
+        width: 100%;
+        position: static; /* 모바일에서는 고정(sticky) 해제 */
+        top: auto;
+        margin-bottom: 20px;
+        order: 1; /* 목차를 위로 이동 */
+    }
 }
 
 
 @media (max-width: 768px) {
   .sidebar { left: -210px; }
   .hamburger-btn {
-    top: 10px; left: 10px;
-    background-color: #403d3d; color: white;
-    padding: 10px; border-radius: 5px;
+    top: 10px;
+    left: 10px;
+    background-color: #403d3d;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
   }
   .sidebar.close + .hamburger-btn { left: 10px; }
   
   .content {
     margin-left: 0;
     padding: 20px; 
-    /* 💡 모바일에서는 다시 세로 배치 (Column) */
+    display: flex; 
+    /* 💡 모바일에서는 다시 세로 배치 */
     flex-direction: column; 
     align-items: center; 
     gap: 20px;
   }
-  
-  /* 🛠️ 모바일에서 각 요소가 꽉 차게 보이도록 설정 */
-  .content > p {
-    width: 100%; /* 꽉 차게 */
-    box-sizing: border-box;
-    margin-bottom: 5px; 
-    text-align: center;
-  }
 
-  #pgn-container {
-    width: 100%;
-    max-width: 100%;
-    margin-top: 10px;
-  }
-  
-  #resetBtn {
-    margin-top: 15px;
-    width: 100%; /* 버튼도 꽉 차게 */
-  }
-
-  /* 체스판 모바일 대응 */
+  /* 🛠️ 모바일: 체스판 크기 조정 */
   #myBoard {
-      margin-top: 20px;
-      width: 100% !important; 
+      width: 100% !important;
+      max-width: 400px;
   }
   
-  #pgn-text {
-    max-height: 250px;
-    font-size: 12px;
+  /* 🛠️ 모바일: 정보 패널 너비 설정 */
+  .game-info-panel {
+    width: 100%;
+    max-width: 400px; /* 체스판과 동일하게 최대 너비 제한 */
+    min-width: auto;
   }
-  
-  .opening-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .board-and-status-container, #pgn-container { max-width: 100%; }
 }
