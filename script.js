@@ -279,8 +279,9 @@ $(function () {
       }
 
       // 오프닝 업데이트
-      function updateOpening() {
-          const currentMoves = game.history().join(' ');
+     function updateOpening() {
+          // ⭐️ 변경: game.history() 대신 game.pgn()을 사용하고 불필요한 줄바꿈/공백을 정리하여 오프닝 데이터 형식과 일치시킵니다. ⭐️
+          const currentMoves = game.pgn().replace(/\s+/g, ' ').trim(); 
           let bestMatch = null;
           
           // 가장 긴 PGN을 가진 오프닝부터 찾습니다 (가장 구체적인 오프닝)
@@ -507,3 +508,4 @@ $(function () {
 
 
 }); // $(function() 끝
+
