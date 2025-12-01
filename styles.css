@@ -18,7 +18,6 @@ body {
   left: 0;
   height: 100%;
   z-index: 100;
-  /* transition 제거 유지 */
 }
 
 .sidebar ul {
@@ -39,19 +38,19 @@ body {
   background-color: #676767;
 }
 
-/* 🛠️ 변경사항: .content를 Flex-Row로 설정하여 체스판과 정보를 가로로 배치 */
+/* 🛠️ 변경사항: 체스판과 모든 정보 요소가 가로로 흐르도록 설정 */
 .content {
   background-color: #a6aaab;
   flex-grow: 1;
   padding: 40px;
   margin-left: 210px; 
-  /* transition 제거 유지 */
   
-  /* 💡 변경사항: 데스크톱에서 #myBoard와 정보 요소를 가로로 배치 */
+  /* Flexbox 설정 */
   display: flex;
-  flex-direction: row; 
+  flex-direction: row; /* 가로 방향 배치 */
+  flex-wrap: wrap;     /* 💡 공간이 부족하면 줄바꿈 허용 (중요) */
   align-items: flex-start; /* 상단 정렬 */
-  gap: 40px; /* 체스판과 정보 사이의 간격 */
+  gap: 30px; /* 요소들 사이의 간격 */
 }
 
 .hamburger-btn {
@@ -64,7 +63,6 @@ body {
   cursor: pointer;
   color: #333;
   z-index: 200;
-  /* transition 제거 유지 */
 }
 
 /* 사이드바가 닫혔을 때 */
@@ -76,35 +74,29 @@ body {
 /* Rules Page & TOC Styles                         */
 /* -------------------------------------------------------------------------- */
 
-/* 목차(TOC) 레이아웃을 위한 새로운 컨테이너 스타일 */
 .rules-page-container {
-    display: flex; /* 내용과 목차를 가로로 배치 */
-    align-items: flex-start; /* 상단 정렬 */
+    display: flex; 
+    align-items: flex-start; 
     width: 100%;
 }
 
 .rules-content-wrapper { 
-    max-width: 700px; /* 목차 공간 확보를 위해 너비를 줄임 */
+    max-width: 700px; 
     flex-grow: 1; 
-    margin-right: 30px; /* 목차와의 간격 확보 */
+    margin-right: 30px; 
 }
 
-/* 스크롤 이동 시 헤더가 상단에 붙을 때 공간 확보 */
 .rules-content-wrapper h2 { 
     padding-top: 10px; 
 }
 
-
-/* --- 목차 사이드바 스타일 (스크롤 고정) --- */
+/* --- 목차 사이드바 스타일 --- */
 .toc-sidebar {
-    width: 250px; /* 목차 너비 */
+    width: 250px; 
     flex-shrink: 0;
-    
-    /* 스크롤을 따라다니게 하는 핵심 스타일 */
     position: sticky; 
-    top: 60px; /* 상단으로부터 띄울 간격 (상단 메뉴와 겹치지 않도록) */
-    align-self: flex-start; /* 래퍼 내에서 상단에 고정 */
-
+    top: 60px; 
+    align-self: flex-start; 
     padding: 15px;
     background-color: #f5f5f5;
     border-left: 3px solid #403d3d;
@@ -142,7 +134,6 @@ body {
     text-decoration: underline;
 }
 
-/* 목차의 2단계 항목 (h3) 스타일 */
 .toc-sidebar li.h3-level {
     padding-left: 15px;
     font-size: 0.9em;
@@ -156,14 +147,14 @@ body {
 .filter-buttons-container {
     margin-bottom: 25px;
     display: flex;
-    flex-wrap: wrap; /* 버튼이 많아지면 줄 바꿈 */
-    gap: 10px; /* 버튼 간 간격 */
+    flex-wrap: wrap; 
+    gap: 10px; 
 }
 
 .filter-btn {
     padding: 8px 15px;
     border: 2px solid #403d3d;
-    border-radius: 20px; /* 둥근 버튼 */
+    border-radius: 20px; 
     background-color: transparent;
     color: #403d3d;
     font-weight: bold;
@@ -171,7 +162,6 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 
-/* 현재 선택된 버튼 스타일 */
 .filter-btn.active {
     background-color: #403d3d;
     color: white;
@@ -197,7 +187,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: transform 0.2s, background-color 0.2s;
     height: 100%;
-    width: 100%; /* 너비 꽉 채우기 */
+    width: 100%; 
 }
 
 .opening-btn:hover {
@@ -220,11 +210,11 @@ body {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto; /* 상하 10%, 좌우 자동 */
+    margin: 10% auto; 
     padding: 20px;
     border-radius: 10px;
     width: 80%;
-    max-width: 600px; /* 최대 너비 */
+    max-width: 600px; 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     color: #333;
@@ -273,14 +263,14 @@ body {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Index Page Styles (Chessboard)                  */
+/* Index Page Styles (Chessboard & Info)           */
 /* -------------------------------------------------------------------------- */
 
-/* board-and-status-container: 체스판과 정보 패널을 가로로 배치 */
+/* board-and-status-container: (HTML 수정 시 사용됨, 여기서는 스타일 보조) */
 .board-and-status-container {
   display: flex;
-  flex-direction: row; /* 가로 배치 */
-  align-items: flex-start; /* 상단 정렬 */
+  flex-direction: row; 
+  align-items: flex-start; 
   gap: 20px;
   width: auto; 
 }
@@ -289,60 +279,44 @@ body {
     margin-top: 0; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
     border: none !important;
-    flex-shrink: 0; /* 크기 고정 */
+    flex-shrink: 0; /* 체스판 크기 고정 */
 }
 
-/* 💡 HTML 수정 없이 정보 요소를 세로로 묶는 것처럼 보이게 마진 조정 */
-.content > p, 
-.content > div, 
-.content > button {
-    /* .content의 직계 자식인 P, DIV, BUTTON의 상하 마진을 조정하여 세로로 뭉치게 합니다. */
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-/* 💡 개별 정보 요소 간 간격 추가 */
+/* 💡 정보 요소(상태, 오프닝) 스타일 최적화 */
 .content > p {
-    margin-bottom: 10px; /* 상태 및 오프닝 p 태그 아래 간격 */
+    margin: 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5); /* 가독성을 위한 배경 */
+    border-radius: 5px;
+    color: #212121;
+    font-size: 16px;
+    font-weight: bold;
+    /* 중요: 옆으로 나열되도록 너비 제한 해제 */
+    width: auto; 
+    display: inline-block;
 }
 
-/* PGN 기록 컨테이너 너비 제어 */
+/* 💡 PGN 컨테이너: 가로 배치되도록 너비 조정 */
 #pgn-container {
+  width: auto; /* 100% 제거 -> 내용물만큼만 차지하거나 남은 공간 차지 */
+  min-width: 250px; /* 너무 작아지지 않게 */
   max-width: 400px; 
-  width: 100%; 
-  /* PGN 컨테이너 상단에 약간의 간격 */
-  margin-top: 10px;
-  margin-bottom: 0;
+  margin: 0;
 }
 
-/* 💡 리셋 버튼 상단에 간격 추가 */
+/* 💡 리셋 버튼: 가로 배치되도록 조정 */
 #resetBtn {
-  margin-top: 15px; 
-  margin-bottom: 0;
+  margin: 0; 
+  height: fit-content; /* 높이 맞춤 */
 }
 
-.game-info-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-}
-
-.game-info-wrapper p {
-    color: #212121; 
-    font-size: 18px;
-    margin: 0; 
-}
-
-
-/* 👇 리셋 버튼 스타일 */
 .action-button {
   background-color: #f77765; 
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  width: auto; /* 너비 고정 유지 */
+  width: auto; 
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
@@ -359,10 +333,10 @@ body {
 
 #status {
   font-weight: bold;
-  color: black; 
+  color: #000; 
 }
 
-/* --- PGN (게임 기록) 스타일 (변경 없음) --- */
+/* --- PGN (게임 기록) 스타일 --- */
 #pgn-container h3 {
   color: #212121; 
   margin-top: 0; 
@@ -394,31 +368,20 @@ body {
   color: #0056b3;
 }
 
-/* --- 기물/칸 선택 효과 스타일 (변경 없음) --- */
+/* --- 기물/칸 선택 효과 --- */
 .piece-417db.selected-piece {
   transition: transform 0.15s ease-out;
   transform: scale(1.15) translateY(-5%);
   z-index: 999;
   box-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
-  border-radius: 50%; /* 기물이 둥근 효과를 가지도록 */
+  border-radius: 50%; 
 }
 
-.square-55d63.selected-square {
-  background-color: #ffe082 !important; 
-  /* 연한 노란색으로 선택된 칸 강조 */
-}
+.square-55d63.selected-square { background-color: #ffe082 !important; }
+.square-55d63.valid-move { background-color: #a5d6a7 !important; }
+.square-55d63.capture-target { box-shadow: inset 0 0 0 5px #f06292; }
 
-.square-55d63.valid-move {
-  background-color: #a5d6a7 !important; 
-  /* 연한 초록색으로 이동 가능 칸 강조 */
-}
-
-.square-55d63.capture-target {
-  box-shadow: inset 0 0 0 5px #f06292; 
-  /* 분홍색 테두리로 잡을 수 있는 칸 강조 */
-}
-
-/* --- 용어 페이지 테이블 스타일 (기존 스타일 유지) --- */
+/* --- 용어 페이지 테이블 스타일 --- */
 .rules-content-wrapper table {
     width: 100%;
     border-collapse: collapse;
@@ -444,99 +407,61 @@ body {
     background-color: #f9f9f9;
 }
 
-.rules-content-wrapper ul {
-    padding-left: 20px;
-}
-
-.rules-content-wrapper li {
-    margin-bottom: 8px;
-}
+.rules-content-wrapper ul { padding-left: 20px; }
+.rules-content-wrapper li { margin-bottom: 8px; }
 
 /* -------------------------------------------------------------------------- */
 /* Mobile Responsive Design                        */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1000px) {
-    /* 규칙 페이지: 목차를 상단으로 이동시킵니다. */
-    .rules-page-container {
-        flex-direction: column; /* 세로 배치로 변경 */
-    }
-    
-    .rules-content-wrapper {
-        margin-right: 0;
-        max-width: 100%;
-        order: 2; /* 콘텐츠를 아래로 이동 */
-    }
-
-    .toc-sidebar {
-        width: 100%;
-        position: static; /* 모바일에서는 고정(sticky) 해제 */
-        top: auto;
-        margin-bottom: 20px;
-        order: 1; /* 목차를 위로 이동 */
-    }
+    .rules-page-container { flex-direction: column; }
+    .rules-content-wrapper { margin-right: 0; max-width: 100%; order: 2; }
+    .toc-sidebar { width: 100%; position: static; top: auto; margin-bottom: 20px; order: 1; }
 }
 
 
 @media (max-width: 768px) {
   .sidebar { left: -210px; }
   .hamburger-btn {
-    top: 10px;
-    left: 10px;
-    background-color: #403d3d;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
+    top: 10px; left: 10px;
+    background-color: #403d3d; color: white;
+    padding: 10px; border-radius: 5px;
   }
   .sidebar.close + .hamburger-btn { left: 10px; }
   
   .content {
     margin-left: 0;
     padding: 20px; 
-    display: flex; 
-    /* 💡 모바일에서는 다시 세로 배치 */
+    /* 💡 모바일에서는 다시 세로 배치 (Column) */
     flex-direction: column; 
     align-items: center; 
     gap: 20px;
   }
   
-  /* 🛠️ 모바일: 정보 요소 마진 초기화 및 재설정 */
+  /* 🛠️ 모바일에서 각 요소가 꽉 차게 보이도록 설정 */
   .content > p {
+    width: 100%; /* 꽉 차게 */
+    box-sizing: border-box;
     margin-bottom: 5px; 
-  }
-  #pgn-container {
-    margin-top: 10px;
-  }
-  #resetBtn {
-    margin-top: 15px;
+    text-align: center;
   }
 
-  /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 (모바일) */
-  .board-and-status-container {
-      display: flex; /* Flex로 변경 유지 */
-      flex-direction: column; /* 세로 배치로 변경 */
-      align-items: center; /* 중앙 정렬 */
-      width: 100%; 
-      max-width: 500px; 
-      gap: 20px;
+  #pgn-container {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
   }
   
+  #resetBtn {
+    margin-top: 15px;
+    width: 100%; /* 버튼도 꽉 차게 */
+  }
+
+  /* 체스판 모바일 대응 */
   #myBoard {
       margin-top: 20px;
-      width: 100% !important; /* 모바일에서 꽉 차게 */
-      /* script.js에서 보드 크기를 동적으로 설정하므로, 여기서는 너비만 제어 */
-  }
-  
-  /* 🛠️ 수정: 정보 래퍼는 가로 꽉 채우고 내용은 왼쪽 정렬 */
-  .game-info-wrapper {
-      width: 100%;
-      align-items: flex-start;
-      gap: 10px;
-  }
-  
-  /* PGN 컨테이너 모바일에서는 꽉 차도록 max-width 해제 */
-  #pgn-container {
-    max-width: 100%;
+      width: 100% !important; 
   }
   
   #pgn-text {
@@ -550,7 +475,5 @@ body {
 }
 
 @media (max-width: 480px) {
-  .board-and-status-container, #pgn-container {
-    max-width: 100%;
-  }
+  .board-and-status-container, #pgn-container { max-width: 100%; }
 }
