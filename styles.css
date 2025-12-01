@@ -54,76 +54,6 @@ body {
   gap: 40px; /* 체스판과 정보 사이의 간격 */
 }
 
-/* 💡 새로 추가된 정보 패널 스타일 (오른쪽 영역) */
-.game-info-panel {
-    display: flex;
-    flex-direction: column; /* 패널 내부의 요소들은 세로로 쌓임 */
-    gap: 20px; /* 요소 간 간격 */
-    flex-grow: 1; /* 남은 공간 차지 */
-    max-width: 400px; /* 정보 패널이 너무 넓어지지 않게 제한 */
-    min-width: 300px;
-}
-
-.status-box p {
-    margin: 5px 0;
-    font-size: 16px;
-    font-weight: bold;
-    color: #212121;
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.clickable-opening-name {
-    color: #007bff; /* 클릭 가능함을 시각적으로 표시 */
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.clickable-opening-name:hover {
-    color: #0056b3;
-}
-
-#pgn-container {
-  width: 100%; 
-  margin: 0;
-}
-
-#pgn-container h3 {
-  color: #212121; 
-  margin-top: 0; 
-  margin-bottom: 5px;
-}
-
-#pgn-text {
-  background-color: #212121; 
-  color: #ffffff; 
-  border: 1px solid #333; 
-  border-radius: 10px; 
-  padding: 15px;
-  font-family: monospace; 
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-y: auto; 
-  max-height: 300px; /* 높이 제한 */
-  white-space: pre-wrap;
-  margin: 0;
-}
-
-#resetBtn {
-  width: 100%; /* 버튼을 패널 너비에 맞춤 */
-  padding: 15px;
-}
-
-#myBoard {
-  margin-top: 0; 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-  border: none !important;
-  flex-shrink: 0; /* 체스판 크기는 줄어들지 않음 */
-}
-
-
 .hamburger-btn {
   position: fixed;
   top: 15px;
@@ -141,32 +71,6 @@ body {
 .sidebar.close { left: -210px; }
 .sidebar.close + .hamburger-btn { left: 20px; }
 .content.shifted { margin-left: 0; }
-
-/* 👇 리셋 버튼 스타일 */
-.action-button { 
-    background-color: #f77765; 
-    color: white; 
-    border: none; 
-    border-radius: 5px; 
-    padding: 10px 20px; 
-    width: auto; /* 너비 고정 유지 */ 
-    cursor: pointer; 
-    font-size: 16px; 
-    font-weight: bold; 
-    transition: background-color 0.2s, transform 0.1s; 
-    box-shadow: 0 4px #d84315; 
-} 
-
-.action-button:hover { 
-    background-color: #d84315; 
-} 
-
-.action-button:active { 
-    background-color: #c0392b; 
-    box-shadow: 0 2px #c0392b; 
-    transform: translateY(2px); 
-}
-
 
 /* -------------------------------------------------------------------------- */
 /* Rules Page & TOC Styles                         */
@@ -349,6 +253,10 @@ body {
 
 .modal-pgn-box, .modal-desc-box {
     margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fafafa;
 }
 
 .modal-pgn-box strong, .modal-desc-box strong {
@@ -357,27 +265,209 @@ body {
     color: #403d3d;
 }
 
-.pgn-text {
-    background-color: #eee;
-    padding: 10px;
-    border-radius: 5px;
+.modal-pgn-box .pgn-text {
     font-family: monospace;
     white-space: pre-wrap;
+    margin: 0;
+    font-size: 14px;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Mobile Responsive Design */
+/* Index Page Styles (Chessboard)                  */
+/* -------------------------------------------------------------------------- */
+
+/* board-and-status-container: 체스판과 정보 패널을 가로로 배치 */
+.board-and-status-container {
+  display: flex;
+  flex-direction: row; /* 가로 배치 */
+  align-items: flex-start; /* 상단 정렬 */
+  gap: 20px;
+  width: auto; 
+}
+
+#myBoard {
+    margin-top: 0; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    border: none !important;
+    flex-shrink: 0; /* 크기 고정 */
+}
+
+/* 💡 HTML 수정 없이 정보 요소를 세로로 묶는 것처럼 보이게 마진 조정 */
+.content > p, 
+.content > div, 
+.content > button {
+    /* .content의 직계 자식인 P, DIV, BUTTON의 상하 마진을 조정하여 세로로 뭉치게 합니다. */
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* 💡 개별 정보 요소 간 간격 추가 */
+.content > p {
+    margin-bottom: 10px; /* 상태 및 오프닝 p 태그 아래 간격 */
+}
+
+/* PGN 기록 컨테이너 너비 제어 */
+#pgn-container {
+  max-width: 400px; 
+  width: 100%; 
+  /* PGN 컨테이너 상단에 약간의 간격 */
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* 💡 리셋 버튼 상단에 간격 추가 */
+#resetBtn {
+  margin-top: 15px; 
+  margin-bottom: 0;
+}
+
+.game-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.game-info-wrapper p {
+    color: #212121; 
+    font-size: 18px;
+    margin: 0; 
+}
+
+
+/* 👇 리셋 버튼 스타일 */
+.action-button {
+  background-color: #f77765; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  width: auto; /* 너비 고정 유지 */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 4px #d84315; 
+}
+
+.action-button:hover { background-color: #d84315; }
+.action-button:active {
+  background-color: #c0392b; 
+  box-shadow: 0 2px #c0392b; 
+  transform: translateY(2px);
+}
+
+#status {
+  font-weight: bold;
+  color: black; 
+}
+
+/* --- PGN (게임 기록) 스타일 (변경 없음) --- */
+#pgn-container h3 {
+  color: #212121; 
+  margin-top: 0; 
+  margin-bottom: 5px;
+}
+
+#pgn-text {
+  background-color: #212121; 
+  color: #ffffff; 
+  border: 1px solid #333; 
+  border-radius: 10px; 
+  padding: 15px;
+  font-family: monospace; 
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-y: auto; 
+  max-height: 250px; 
+  white-space: pre-wrap;
+}
+
+.clickable-opening-name {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.clickable-opening-name:hover {
+  color: #0056b3;
+}
+
+/* --- 기물/칸 선택 효과 스타일 (변경 없음) --- */
+.piece-417db.selected-piece {
+  transition: transform 0.15s ease-out;
+  transform: scale(1.15) translateY(-5%);
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
+  border-radius: 50%; /* 기물이 둥근 효과를 가지도록 */
+}
+
+.square-55d63.selected-square {
+  background-color: #ffe082 !important; 
+  /* 연한 노란색으로 선택된 칸 강조 */
+}
+
+.square-55d63.valid-move {
+  background-color: #a5d6a7 !important; 
+  /* 연한 초록색으로 이동 가능 칸 강조 */
+}
+
+.square-55d63.capture-target {
+  box-shadow: inset 0 0 0 5px #f06292; 
+  /* 분홍색 테두리로 잡을 수 있는 칸 강조 */
+}
+
+/* --- 용어 페이지 테이블 스타일 (기존 스타일 유지) --- */
+.rules-content-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.rules-content-wrapper th, .rules-content-wrapper td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.rules-content-wrapper th {
+    background-color: #f2f2f2;
+    color: #403d3d;
+    font-weight: bold;
+}
+
+.rules-content-wrapper tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.rules-content-wrapper ul {
+    padding-left: 20px;
+}
+
+.rules-content-wrapper li {
+    margin-bottom: 8px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile Responsive Design                        */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1000px) {
+    /* 규칙 페이지: 목차를 상단으로 이동시킵니다. */
     .rules-page-container {
-        flex-direction: column; /* 목차와 내용을 세로로 쌓음 */
+        flex-direction: column; /* 세로 배치로 변경 */
     }
+    
     .rules-content-wrapper {
         margin-right: 0;
         max-width: 100%;
-        order: 2; /* 내용을 아래로 이동 */
+        order: 2; /* 콘텐츠를 아래로 이동 */
     }
+
     .toc-sidebar {
         width: 100%;
         position: static; /* 모바일에서는 고정(sticky) 해제 */
@@ -409,17 +499,58 @@ body {
     align-items: center; 
     gap: 20px;
   }
+  
+  /* 🛠️ 모바일: 정보 요소 마진 초기화 및 재설정 */
+  .content > p {
+    margin-bottom: 5px; 
+  }
+  #pgn-container {
+    margin-top: 10px;
+  }
+  #resetBtn {
+    margin-top: 15px;
+  }
 
-  /* 🛠️ 모바일: 체스판 크기 조정 */
-  #myBoard {
-      width: 100% !important;
-      max-width: 400px;
+  /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 (모바일) */
+  .board-and-status-container {
+      display: flex; /* Flex로 변경 유지 */
+      flex-direction: column; /* 세로 배치로 변경 */
+      align-items: center; /* 중앙 정렬 */
+      width: 100%; 
+      max-width: 500px; 
+      gap: 20px;
   }
   
-  /* 🛠️ 모바일: 정보 패널 너비 설정 */
-  .game-info-panel {
-    width: 100%;
-    max-width: 400px; /* 체스판과 동일하게 최대 너비 제한 */
-    min-width: auto;
+  #myBoard {
+      margin-top: 20px;
+      width: 100% !important; /* 모바일에서 꽉 차게 */
+      /* script.js에서 보드 크기를 동적으로 설정하므로, 여기서는 너비만 제어 */
+  }
+  
+  /* 🛠️ 수정: 정보 래퍼는 가로 꽉 채우고 내용은 왼쪽 정렬 */
+  .game-info-wrapper {
+      width: 100%;
+      align-items: flex-start;
+      gap: 10px;
+  }
+  
+  /* PGN 컨테이너 모바일에서는 꽉 차도록 max-width 해제 */
+  #pgn-container {
+    max-width: 100%;
+  }
+  
+  #pgn-text {
+    max-height: 250px;
+    font-size: 12px;
+  }
+  
+  .opening-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .board-and-status-container, #pgn-container {
+    max-width: 100%;
   }
 }
