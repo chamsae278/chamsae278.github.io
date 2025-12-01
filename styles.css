@@ -40,7 +40,7 @@ body {
 }
 
 .content {
-  background-color: #5ec1daff;
+  background-color: #75afbe;
   flex-grow: 1;
   padding: 40px;
   margin-left: 210px; 
@@ -515,4 +515,5 @@ body {
     max-width: 100%;
   }
   }
+
 
