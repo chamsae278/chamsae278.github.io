@@ -286,6 +286,18 @@ body {
     background-color: #e0e0e0;
 }
 
+.clickable-opening-name {
+    font-weight: bold;
+    color: #007bff; /* 파란색 계열로 클릭 가능 표시 */
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.clickable-opening-name:hover {
+    color: #0056b3;
+}
+
 /* (이하 기존 .opening-grid 및 .modal 스타일 유지) */
 /* --- 오프닝 페이지 스타일 추가 --- */
 
@@ -377,4 +389,5 @@ body {
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
   }
+
 
