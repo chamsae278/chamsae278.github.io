@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chesses.com</title>
+    <title>체스 오프닝 도감</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -11,19 +9,39 @@
       <aside class="sidebar" id="sidebar">
         <nav>
           <ul>
-            <li><a href="index.html">♟️Chesses.com</a></li>
+            <li><a href="chesses.html">♟️Chesses.com</a></li>
             <li><a href="규칙.html">규칙</a></li>
             <li><a href="용어.html">용어</a></li>
             <li><a href="오프닝.html">오프닝</a></li>
           </ul>
+          <button class="hamburger-btn" id="hamburgerBtn">☰</button>
         </nav>
       </aside>
-      <button class="hamburger-btn" id="hamburgerBtn">☰</button>
-      <main class="content" id="maincontent">
+      
+      <main class="content" id="mainContent">
+        <h1>체스 오프닝 도감</h1>
+        <p>버튼을 클릭하여 각 오프닝의 순서와 특징을 확인하세요.</p>
+        
+        <div id="opening-grid" class="opening-grid"></div>
+
+        <div id="openingModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="modalTitle">오프닝 이름</h2>
+                <div class="modal-pgn-box">
+                    <strong>순서 (Moves):</strong>
+                    <p id="modalPgn" class="pgn-text"></p>
+                </div>
+                <div class="modal-desc-box">
+                    <strong>설명 및 강점:</strong>
+                    <p id="modalDesc"></p>
+                </div>
+            </div>
         </div>
-        </main>
-    </div> <script src="jquery.min.js"></script>
+      </main>
+    </div>
+    
+    <script src="jquery.min.js"></script> <script src="chess.min.js"></script>
     <script src="script.js"></script>
   </body>
-
 </html>
