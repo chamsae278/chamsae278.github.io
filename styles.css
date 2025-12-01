@@ -43,10 +43,9 @@ body {
   background-color: #a6aaab;
   flex-grow: 1;
   padding: 40px;
-  margin-left: 250px; 
+  margin-left: 210px; 
   /* transition 제거 유지 */
 }
-
 .hamburger-btn {
   position: fixed;
   top: 15px;
@@ -65,11 +64,210 @@ body {
 .sidebar.close + .hamburger-btn { left: 20px; }
 .content.shifted { margin-left: 0; }
 
----
+/* -------------------------------------------------------------------------- */
+/* Rules Page & TOC Styles                         */
+/* -------------------------------------------------------------------------- */
 
-### 🖥️ 데스크톱/와이드 스크린 레이아웃 (기본)
+/* 목차(TOC) 레이아웃을 위한 새로운 컨테이너 스타일 */
+.rules-page-container {
+    display: flex; /* 내용과 목차를 가로로 배치 */
+    align-items: flex-start; /* 상단 정렬 */
+    width: 100%;
+}
 
-```css
+.rules-content-wrapper { 
+    max-width: 700px; /* 목차 공간 확보를 위해 너비를 줄임 */
+    flex-grow: 1; 
+    margin-right: 30px; /* 목차와의 간격 확보 */
+}
+
+/* 스크롤 이동 시 헤더가 상단에 붙을 때 공간 확보 */
+.rules-content-wrapper h2 { 
+    padding-top: 10px; 
+}
+
+
+/* --- 목차 사이드바 스타일 (스크롤 고정) --- */
+.toc-sidebar {
+    width: 250px; /* 목차 너비 */
+    flex-shrink: 0;
+    
+    /* 스크롤을 따라다니게 하는 핵심 스타일 */
+    position: sticky; 
+    top: 60px; /* 상단으로부터 띄울 간격 (상단 메뉴와 겹치지 않도록) */
+    align-self: flex-start; /* 래퍼 내에서 상단에 고정 */
+
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-left: 3px solid #403d3d;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.toc-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #403d3d;
+}
+
+.toc-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-sidebar li {
+    margin-bottom: 5px;
+}
+
+.toc-sidebar a {
+    text-decoration: none;
+    color: #007bff;
+    display: block;
+    padding: 3px 0;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.toc-sidebar a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 목차의 2단계 항목 (h3) 스타일 */
+.toc-sidebar li.h3-level {
+    padding-left: 15px;
+    font-size: 0.9em;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Opening Page Styles                             */
+/* -------------------------------------------------------------------------- */
+
+.filter-buttons-container {
+    margin-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap; /* 버튼이 많아지면 줄 바꿈 */
+    gap: 10px; /* 버튼 간 간격 */
+}
+
+.filter-btn {
+    padding: 8px 15px;
+    border: 2px solid #403d3d;
+    border-radius: 20px; /* 둥근 버튼 */
+    background-color: transparent;
+    color: #403d3d;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* 현재 선택된 버튼 스타일 */
+.filter-btn.active {
+    background-color: #403d3d;
+    color: white;
+    border-color: #403d3d;
+}
+
+.opening-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.opening-btn {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s, background-color 0.2s;
+    height: 100%;
+    width: 100%; /* 너비 꽉 채우기 */
+}
+
+.opening-btn:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* 팝업창(모달) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 상하 10%, 좌우 자동 */
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px; /* 최대 너비 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    color: #333;
+}
+
+.modal-content h2 {
+    color: #403d3d;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-pgn-box, .modal-desc-box {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+
+.modal-pgn-box strong, .modal-desc-box strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #403d3d;
+}
+
+.modal-pgn-box .pgn-text {
+    font-family: monospace;
+    white-space: pre-wrap;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Index Page Styles (Chessboard)                  */
+/* -------------------------------------------------------------------------- */
+
 /* board-and-status-container: 체스판과 정보 패널을 가로로 배치 */
 .board-and-status-container {
   display: flex;
@@ -159,11 +357,101 @@ body {
   white-space: pre-wrap;
 }
 
----
+.clickable-opening-name {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-### 📱 모바일/태블릿 레이아웃 (`@media` Query)
+.clickable-opening-name:hover {
+  color: #0056b3;
+}
 
-```css
+/* --- 기물/칸 선택 효과 스타일 (변경 없음) --- */
+.piece-417db.selected-piece {
+  transition: transform 0.15s ease-out;
+  transform: scale(1.15) translateY(-5%);
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.7);
+  border-radius: 50%; /* 기물이 둥근 효과를 가지도록 */
+}
+
+.square-55d63.selected-square {
+  background-color: #ffe082 !important; 
+  /* 연한 노란색으로 선택된 칸 강조 */
+}
+
+.square-55d63.valid-move {
+  background-color: #a5d6a7 !important; 
+  /* 연한 초록색으로 이동 가능 칸 강조 */
+}
+
+.square-55d63.capture-target {
+  box-shadow: inset 0 0 0 5px #f06292; 
+  /* 분홍색 테두리로 잡을 수 있는 칸 강조 */
+}
+
+/* --- 용어 페이지 테이블 스타일 (기존 스타일 유지) --- */
+.rules-content-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.rules-content-wrapper th, .rules-content-wrapper td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.rules-content-wrapper th {
+    background-color: #f2f2f2;
+    color: #403d3d;
+    font-weight: bold;
+}
+
+.rules-content-wrapper tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.rules-content-wrapper ul {
+    padding-left: 20px;
+}
+
+.rules-content-wrapper li {
+    margin-bottom: 8px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile Responsive Design                        */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+    /* 규칙 페이지: 목차를 상단으로 이동시킵니다. */
+    .rules-page-container {
+        flex-direction: column; /* 세로 배치로 변경 */
+    }
+    
+    .rules-content-wrapper {
+        margin-right: 0;
+        max-width: 100%;
+        order: 2; /* 콘텐츠를 아래로 이동 */
+    }
+
+    .toc-sidebar {
+        width: 100%;
+        position: static; /* 모바일에서는 고정(sticky) 해제 */
+        top: auto;
+        margin-bottom: 20px;
+        order: 1; /* 목차를 위로 이동 */
+    }
+}
+
+
 @media (max-width: 768px) {
   .sidebar { left: -210px; }
   .hamburger-btn {
@@ -199,195 +487,31 @@ body {
       width: 100% !important; /* 모바일에서 꽉 차게 */
       /* script.js에서 보드 크기를 동적으로 설정하므로, 여기서는 너비만 제어 */
   }
-
+  
   /* 🛠️ 수정: 정보 래퍼는 가로 꽉 채우고 내용은 왼쪽 정렬 */
   .game-info-wrapper {
       width: 100%;
       align-items: flex-start;
       gap: 10px;
   }
-
+  
   /* PGN 컨테이너 모바일에서는 꽉 차도록 max-width 해제 */
   #pgn-container {
     max-width: 100%;
   }
-
+  
   #pgn-text {
-    max-height: 250px; 
+    max-height: 250px;
     font-size: 12px;
   }
-}
-
-@media (max-width: 480px) {
-    .board-and-status-container, #pgn-container {
-        max-width: 100%;
-    }
-}
-
-/* --- 기물/칸 선택 효과 스타일 (변경 없음) --- */
-.piece-417db.selected-piece {
-    transition: transform 0.15s ease-out; 
-    transform: scale(1.15) translateY(-5%); 
-    z-index: 999; 
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.5);
-}
-.valid-move {
-  background: radial-gradient(rgba(255, 215, 0, 0.8) 20%, transparent 21%); 
-  cursor: pointer;
-}
-.selected-square { box-shadow: inset 0 0 0 2px #FFD700; }
-.square-55d63.capture-target {
-    background: none; 
-    box-shadow: inset 0 0 0 4px #FFD700; 
-    cursor: pointer;
-}
-
-/* --- 규칙 페이지 스타일 (변경 없음) --- */
-.rules-content-wrapper { max-width: 900px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-.rules-content-wrapper h1 { color: #403d3d; border-bottom: 2px solid #a6aaab; padding-bottom: 10px; margin-top: 0; }
-.rules-content-wrapper h2 { color: #212121; margin-top: 30px; font-size: 1.5em; }
-.rules-content-wrapper h3 { color: #403d3d; margin-top: 20px; font-size: 1.2em; }
-.rule-section { margin-bottom: 40px; }
-.rules-content-wrapper table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
-.rules-content-wrapper th, .rules-content-wrapper td { border: 1px solid #ddd; padding: 12px 15px; text-align: left; }
-.rules-content-wrapper th { background-color: #f2f2f2; color: #403d3d; font-weight: bold; }
-.rules-content-wrapper tr:nth-child(even) { background-color: #f9f9f9; }
-.rules-content-wrapper ul { padding-left: 20px; }
-.rules-content-wrapper li { margin-bottom: 8px; }
-
-/* ... 기존 CSS 코드 유지 ... */
-/* --- 오프닝 필터 버튼 스타일 추가 --- */
-.filter-buttons-container {
-    margin-bottom: 25px;
-    display: flex;
-    flex-wrap: wrap; /* 버튼이 많아지면 줄 바꿈 */
-    gap: 10px; /* 버튼 간 간격 */
-}
-
-.filter-btn {
-    padding: 8px 15px;
-    border: 2px solid #403d3d;
-    border-radius: 20px; /* 둥근 버튼 */
-    background-color: transparent;
-    color: #403d3d;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-/* 현재 선택된 버튼 스타일 */
-.filter-btn.active {
-    background-color: #403d3d;
-    color: white;
-    border-color: #403d3d;
-}
-
-.filter-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.clickable-opening-name {
-    font-weight: bold;
-    color: #007bff; /* 파란색 계열로 클릭 가능 표시 */
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.2s;
-}
-
-.clickable-opening-name:hover {
-    color: #0056b3;
-}
-
-/* (이하 기존 .opening-grid 및 .modal 스타일 유지) */
-/* --- 오프닝 페이지 스타일 추가 --- */
-
-/* 4열 그리드 레이아웃 */
-/* --- 오프닝 페이지 스타일 --- */
-.opening-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-top: 20px;
-}
-
-@media (max-width: 768px) {
+  
   .opening-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.opening-btn {
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 8px;
-  padding: 15px 10px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s, background-color 0.2s;
-  height: 100%;
-  width: 100%; /* 너비 꽉 채우기 */
-}
-
-.opening-btn:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
-}
-
-/* 팝업창(모달) */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 30px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.close-modal {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-}
-
-.modal-pgn-box {
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 15px 0;
-  font-family: monospace;
-  border-left: 4px solid #403d3d;
-}
-
-.modal-desc-box {
-  line-height: 1.6;
-  color: #444;
-}
-
-#modalTitle {
-  margin-top: 0;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 10px;
+@media (max-width: 480px) {
+  .board-and-status-container, #pgn-container {
+    max-width: 100%;
   }
-
-
+  }
