@@ -429,7 +429,9 @@ body {
 /* -------------------------------------------------------------------------- */
 /* Mobile Responsive Design                        */
 /* -------------------------------------------------------------------------- */
-
+.mobile-top-nav {
+    display: none; /* 기본적으로 데스크톱에서는 숨김 */
+}
 @media (max-width: 1000px) {
     /* 규칙 페이지: 목차를 상단으로 이동시킵니다. */
     .rules-page-container {
@@ -453,16 +455,58 @@ body {
 
 
 @media (max-width: 768px) {
-  .sidebar { left: -210px; }
-  .hamburger-btn {
-    top: 10px;
-    left: 10px;
-    background-color: #403d3d;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  .sidebar.close + .hamburger-btn { left: 10px; }
+    /* 1. 기존 햄버거 버튼 및 사이드바 완전히 숨기기 */
+    .hamburger-btn {
+        display: none !important;
+    }
+    .sidebar {
+        display: none !important;
+    }
+
+    /* 2. 상단 고정 네비게이션 바 표시 */
+    .mobile-top-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: #403d3d; /* 기존 사이드바와 동일한 색상 */
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        
+        /* 애니메이션: 위에서 아래로 부드럽게 나타남 */
+        animation: navSlideDown 0.5s ease-out;
+    }
+
+    /* 3. 상단 링크 스타일 및 애니메이션 */
+    .mobile-top-nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 10px 15px;
+        transition: all 0.3s ease; /* 애니메이션 효과 */
+    }
+
+    /* 클릭하거나 눌렀을 때의 효과 */
+    .mobile-top-nav a:active,
+    .mobile-top-nav a:hover {
+        color: #75afbe;
+        transform: scale(1.1); /* 약간 커지는 효과 */
+    }
+
+    /* 4. 콘텐츠 영역 조정 (상단바 공간 확보) */
+    .content {
+        margin-left: 0 !important;
+        padding-top: 80px !important; /* 상단바 높이에 맞춰 여백 추가 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
   
   .content {
     margin-left: 0;
@@ -510,10 +554,20 @@ body {
   }
 }
 
+@keyframes navSlideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 480px) {
   .board-and-status-container, #pgn-container {
     max-width: 100%;
   }
   }
+
 
 
