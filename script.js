@@ -89,25 +89,18 @@ $(function () {
   // --- 3. UI 이벤트 핸들러 및 모달 로직 (전 페이지 공통) ---
   
   // 사이드바 토글
- if (hamburgerBtn) {
-  hamburgerBtn.addEventListener("click", function (e) {
-    // 이벤트 전파 방지 (혹시 모를 버그 예방)
-    e.stopPropagation();
-    
-    // 모바일과 데스크톱 공용 로직
-    sidebar.classList.toggle("close"); // 데스크톱용 (기존 유지)
-    sidebar.classList.toggle("open");  // 모바일용 (새로 추가)
-    
-    if(mainContent) mainContent.classList.toggle("shifted");
-    
-    // 보드 크기 조정
-    if (board) {
-      setTimeout(function() {
-        board.resize(); 
-      }, 300);
-    }
-  });
-}
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", function () {
+      sidebar.classList.toggle("close");
+      if(mainContent) mainContent.classList.toggle("shifted");
+      // 보드 크기 조정 (사이드바 닫힘/열림에 따라)
+      if (board) {
+        setTimeout(function() {
+          board.resize(); 
+        }, 300); // CSS 애니메이션 시간을 고려하여 지연
+      }
+    });
+  }
 
   // 모달 닫기
   if (modalCloseBtn) {
@@ -122,7 +115,7 @@ $(function () {
           if (openingModal) openingModal.style.display = 'none';
       }
   });
-  
+
   // 오프닝 이름 클릭 시 모달 열기 (Index.html 페이지 전용)
   if ($openingName && $openingName.length) {
       $openingName.on('click', function() {
@@ -515,5 +508,4 @@ $(function () {
 
 
 }); // $(function() 끝
-
 

@@ -49,7 +49,7 @@ body {
 .hamburger-btn {
   position: fixed;
   top: 15px;
-  left: 230px;
+  left: 270px;
   font-size: 24px;
   background: none;
   border: none;
@@ -453,32 +453,25 @@ body {
 
 
 @media (max-width: 768px) {
-  /* 사이드바가 닫혔을 때 확실히 화면 밖으로 밀어냄 */
-  .sidebar { 
-    left: -210px; 
-  }
-  
-  /* 사이드바가 열렸을 때 (js에서 클래스 토글) */
-  .sidebar.open { 
-    left: 0; 
-  }
-
+  .sidebar { left: -210px; }
   .hamburger-btn {
-    left: 15px;
-   display: block !important;
+    top: 10px;
+    left: 10px;
+    background-color: #403d3d;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .sidebar.close + .hamburger-btn { left: 10px; }
+  
+  .content {
+    margin-left: 0;
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
   }
 
-  .content {
-    margin-left: 0 !important; /* 데스크톱의 210px 마진 강제 제거 */
-    width: 100%;
-    padding: 70px 15px 20px 15px; /* 버튼 공간 확보를 위해 상단 패딩만 부여 */
-    box-sizing: border-box;
-  }
-  /* 사이드바가 열렸을 때 버튼 위치를 옆으로 밀어주고 싶다면 추가 */
-  .sidebar.open + .hamburger-btn {
-    left: 220px;
-  }
-}
   /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 */
   .board-and-status-container {
       display: flex; /* Flex로 변경 유지 */
@@ -515,13 +508,6 @@ body {
   .opening-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-.sidebar.open ~ .content {
-    transform: translateX(210px); /* 내용을 우측으로 밀어냄 */
-  }
-  
-  .page-container {
-    overflow-x: hidden; /* 밀려난 내용 때문에 가로 스크롤 생기는 것 방지 */
-  }
 }
 
 @media (max-width: 480px) {
@@ -529,8 +515,5 @@ body {
     max-width: 100%;
   }
   }
-
-
-
 
 
