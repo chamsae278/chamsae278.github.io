@@ -49,7 +49,7 @@ body {
 .hamburger-btn {
   position: fixed;
   top: 15px;
-  left: 270px;
+  left: 230px;
   font-size: 24px;
   background: none;
   border: none;
@@ -464,16 +464,16 @@ body {
   }
 
   .hamburger-btn {
-    top: 10px;
-    left: 10px;
-    background-color: #403d3d;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    z-index: 1001; /* 사이드바(100)나 모달(1000)보다 높게 설정 */
-    display: block !important; /* 모바일에서 확실히 보이게 함 */
+    left: 15px;
+   display: block !important;
   }
 
+  .content {
+    margin-left: 0 !important; /* 데스크톱의 210px 마진 강제 제거 */
+    width: 100%;
+    padding: 70px 15px 20px 15px; /* 버튼 공간 확보를 위해 상단 패딩만 부여 */
+    box-sizing: border-box;
+  }
   /* 사이드바가 열렸을 때 버튼 위치를 옆으로 밀어주고 싶다면 추가 */
   .sidebar.open + .hamburger-btn {
     left: 220px;
@@ -515,6 +515,13 @@ body {
   .opening-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+.sidebar.open ~ .content {
+    transform: translateX(210px); /* 내용을 우측으로 밀어냄 */
+  }
+  
+  .page-container {
+    overflow-x: hidden; /* 밀려난 내용 때문에 가로 스크롤 생기는 것 방지 */
+  }
 }
 
 @media (max-width: 480px) {
@@ -522,6 +529,7 @@ body {
     max-width: 100%;
   }
   }
+
 
 
 
