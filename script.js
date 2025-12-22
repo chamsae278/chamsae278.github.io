@@ -87,7 +87,41 @@ $(function () {
   const filterContainer = document.getElementById("filter-buttons-container");
   
   // --- 3. UI 이벤트 핸들러 및 모달 로직 (전 페이지 공통) ---
-  
+  function openOpeningModal(opening) {
+    // 1. 기본 정보 채우기
+    document.getElementById("modalTitle").textContent = opening.name;
+    document.getElementById("modalPgn").textContent = opening.pgn;
+    document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "설명 준비 중";
+    
+    // 2. 바리에이션 찾기 로직 추가
+    const variationsContainer = document.getElementById("modalVariations");
+    variationsContainer.innerHTML = ''; // 초기화
+
+    // OPENINGS 배열에서 현재 오프닝의 PGN으로 시작하면서 이름은 다른 것들을 찾습니다.
+    const variations = OPENINGS.filter(op => 
+        op.pgn.startsWith(opening.pgn) && op.name !== opening.name
+    );
+
+    if (variations.length > 0) {
+        variations.forEach(v => {
+            const link = document.createElement('a');
+            link.href = "#";
+            link.className = "variation-link"; // CSS로 꾸밀 수 있도록 클래스 부여
+            link.textContent = v.name.replace(opening.name + ": ", ""); // 중복 이름 제거
+            link.style = "background: #f0f0f0; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; color: #333; text-decoration: none;";
+            
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                openOpeningModal(v); // 클릭 시 해당 바리에이션 모달로 갱신 (재귀)
+            });
+            variationsContainer.appendChild(link);
+        });
+    } else {
+        variationsContainer.innerHTML = '<span style="color: #888; font-size: 0.9em;">파생된 주요 바리에이션이 없습니다.</span>';
+    }
+
+    if (openingModal) openingModal.style.display = "block";
+}
   // 사이드바 토글
   if (hamburgerBtn) {
     hamburgerBtn.addEventListener("click", function () {
@@ -120,10 +154,7 @@ $(function () {
   if ($openingName && $openingName.length) {
       $openingName.on('click', function() {
           if (currentOpening) {
-              document.getElementById("modalTitle").textContent = currentOpening.name;
-              document.getElementById("modalPgn").textContent = currentOpening.pgn;
-              document.getElementById("modalDesc").textContent = currentOpening.desc ? currentOpening.desc : "설명 준비 중";
-              if (openingModal) openingModal.style.display = "block";
+              openOpeningModal(currentOpening);
           }
       });
   }
@@ -136,14 +167,8 @@ $(function () {
       const btn = document.createElement('button');
       btn.className = 'opening-btn';
       btn.textContent = opening.name;
-      btn.addEventListener('click', () => {
-          // 모달 정보 업데이트
-          document.getElementById("modalTitle").textContent = opening.name;
-          document.getElementById("modalPgn").textContent = opening.pgn;
-          document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "설명 준비 중";
-          if (openingModal) openingModal.style.display = "block";
-      });
-      return btn;
+      btn.addEventListener('click', () => openOpeningModal(opening)); // 수정됨
+    return btn;
   }
 
   // 선택된 필터에 따라 오프닝 목록을 렌더링하는 함수 (오프닝 페이지 전용)
@@ -508,4 +533,5 @@ $(function () {
 
 
 }); // $(function() 끝
+
 
