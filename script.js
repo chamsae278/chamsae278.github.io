@@ -87,122 +87,97 @@ $(function () {
   const filterContainer = document.getElementById("filter-buttons-container");
   
   // --- 3. UI 이벤트 핸들러 및 모달 로직 (전 페이지 공통) ---
-  function openOpeningModal(opening) {
-    // 1. 기본 정보 채우기
-    document.getElementById("modalTitle").textContent = opening.name;
-    document.getElementById("modalPgn").textContent = opening.pgn;
-    document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "설명 준비 중";
-    
-    // 2. 바리에이션 찾기 로직 추가
-    const variationsContainer = document.getElementById("modalVariations");
-    variationsContainer.innerHTML = ''; // 초기화
+ function openOpeningModal(opening) {
+      if (!openingModal) return;
 
-    // OPENINGS 배열에서 현재 오프닝의 PGN으로 시작하면서 이름은 다른 것들을 찾습니다.
-    const variations = OPENINGS.filter(op => 
-        op.pgn.startsWith(opening.pgn) && op.name !== opening.name
-    );
+      // 기본 정보 채우기
+      document.getElementById("modalTitle").textContent = opening.name;
+      document.getElementById("modalPgn").textContent = opening.pgn;
+      document.getElementById("modalDesc").textContent = opening.desc ? opening.desc : "설명 준비 중";
+      
+      // 파생 바리에이션 찾기 로직
+      const variationsContainer = document.getElementById("modalVariations");
+      if (variationsContainer) {
+          variationsContainer.innerHTML = ''; 
 
-    if (variations.length > 0) {
-        variations.forEach(v => {
-            const link = document.createElement('a');
-            link.href = "#";
-            link.className = "variation-link"; // CSS로 꾸밀 수 있도록 클래스 부여
-            link.textContent = v.name.replace(opening.name + ": ", ""); // 중복 이름 제거
-            link.style = "background: #f0f0f0; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; color: #333; text-decoration: none;";
-            
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                openOpeningModal(v); // 클릭 시 해당 바리에이션 모달로 갱신 (재귀)
-            });
-            variationsContainer.appendChild(link);
-        });
-    } else {
-        variationsContainer.innerHTML = '<span style="color: #888; font-size: 0.9em;">파생된 주요 바리에이션이 없습니다.</span>';
-    }
+          // 현재 오프닝의 PGN으로 시작하는 더 구체적인 오프닝 필터링
+          const variations = OPENINGS.filter(op => 
+              op.pgn.startsWith(opening.pgn) && op.name !== opening.name
+          );
 
-    if (openingModal) openingModal.style.display = "block";
-}
-  // 사이드바 토글
+          if (variations.length > 0) {
+              variations.forEach(v => {
+                  const link = document.createElement('a');
+                  link.href = "#";
+                  link.className = "variation-link";
+                  link.textContent = v.name;
+                  link.style = "background: #f0f0f0; padding: 5px 10px; border-radius: 4px; font-size: 0.85em; color: #333; text-decoration: none; border: 1px solid #ddd;";
+                  
+                  link.addEventListener('click', (e) => {
+                      e.preventDefault();
+                      openOpeningModal(v); 
+                  });
+                  variationsContainer.appendChild(link);
+              });
+          } else {
+              variationsContainer.innerHTML = '<span style="color: #888; font-size: 0.85em;">파생된 바리에이션이 없습니다.</span>';
+          }
+      }
+
+      openingModal.style.display = "block";
+  }
+
+  // --- 4. UI 이벤트 및 초기화 ---
   if (hamburgerBtn) {
     hamburgerBtn.addEventListener("click", function () {
       sidebar.classList.toggle("close");
       if(mainContent) mainContent.classList.toggle("shifted");
-      // 보드 크기 조정 (사이드바 닫힘/열림에 따라)
-      if (board) {
-        setTimeout(function() {
-          board.resize(); 
-        }, 300); // CSS 애니메이션 시간을 고려하여 지연
-      }
+      if (board) { setTimeout(() => board.resize(), 300); }
     });
   }
 
-  // 모달 닫기
   if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', () => {
-        if (openingModal) openingModal.style.display = 'none';
-    });
+    modalCloseBtn.addEventListener('click', () => { openingModal.style.display = 'none'; });
   }
 
-  // 모달 외부 클릭 시 닫기
   window.addEventListener('click', (event) => {
-      if (event.target === openingModal) {
-          if (openingModal) openingModal.style.display = 'none';
-      }
+      if (event.target === openingModal) { openingModal.style.display = 'none'; }
   });
 
-  // 오프닝 이름 클릭 시 모달 열기 (Index.html 페이지 전용)
+  // 메인 페이지 오프닝 이름 클릭
   if ($openingName && $openingName.length) {
       $openingName.on('click', function() {
-          if (currentOpening) {
-              openOpeningModal(currentOpening);
-          }
+          if (currentOpening) openOpeningModal(currentOpening);
       });
   }
 
-
-  // --- 4. 오프닝 페이지 로직 (opening.html 전용) ---
-
-  // 오프닝 버튼 생성 함수
+  // --- 5. 오프닝 페이지 로직 ---
   function createOpeningButton(opening) {
       const btn = document.createElement('button');
       btn.className = 'opening-btn';
       btn.textContent = opening.name;
-      btn.addEventListener('click', () => openOpeningModal(opening)); // 수정됨
-    return btn;
+      btn.addEventListener('click', () => openOpeningModal(opening)); 
+      return btn;
   }
 
-  // 선택된 필터에 따라 오프닝 목록을 렌더링하는 함수 (오프닝 페이지 전용)
   function renderOpenings(filterMove) {
       if (!openingGrid) return;
       openingGrid.innerHTML = '';
       
       const filteredOpenings = OPENINGS.filter(opening => {
-          if (!opening.pgn || opening.name === "아직 오프닝이 아닙니다.") return false;
           if (filterMove === 'All') return true;
           return opening.pgn.startsWith(filterMove);
       });
 
-      if (filteredOpenings.length === 0) {
-          const p = document.createElement('p');
-          p.textContent = `"${filterMove.replace('1. ', '')}"(으)로 시작하는 오프닝이 없습니다.`;
-          openingGrid.appendChild(p);
-      } else {
-          filteredOpenings.forEach(opening => {
-              const btn = createOpeningButton(opening);
-              openingGrid.appendChild(btn);
-          });
-      }
+      filteredOpenings.forEach(opening => {
+          openingGrid.appendChild(createOpeningButton(opening));
+      });
 
-      // 필터 버튼 활성화 상태 업데이트
       document.querySelectorAll('.filter-btn').forEach(button => {
-          button.classList.remove('active');
-          if (button.getAttribute('data-filter') === filterMove) {
-              button.classList.add('active');
-          }
+          button.classList.toggle('active', button.getAttribute('data-filter') === filterMove);
       });
   }
 
-  // 필터 버튼을 생성하고 이벤트를 연결하는 함수 (오프닝 페이지 전용)
   function createFilterButtons() {
       if (!filterContainer) return;
       FILTER_MOVES.forEach(move => {
@@ -210,17 +185,14 @@ $(function () {
           btn.className = 'filter-btn';
           btn.textContent = move === 'All' ? '전체보기' : move.replace('1. ', '');
           btn.setAttribute('data-filter', move);
-          btn.addEventListener('click', () => {
-              renderOpenings(move);
-          });
+          btn.addEventListener('click', () => renderOpenings(move));
           filterContainer.appendChild(btn);
       });
   }
 
-  // 오프닝 페이지 로드 시 초기화
   if (openingGrid) {
       createFilterButtons();
-      renderOpenings('All'); // 초기에는 '전체보기' 목록 표시
+      renderOpenings('All');
   }
   
   // --- 5. 체스 게임 로직 가드 (Index.html 전용) --- 
