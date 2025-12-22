@@ -561,13 +561,13 @@ body {
     to {
         transform: translateY(0);
     }
-}
 
 @media (max-width: 480px) {
   .board-and-status-container, #pgn-container {
     max-width: 100%;
   }
   }
+
 
 
 
