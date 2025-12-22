@@ -453,25 +453,33 @@ body {
 
 
 @media (max-width: 768px) {
-  .sidebar { left: -210px; }
+  /* 사이드바가 닫혔을 때 확실히 화면 밖으로 밀어냄 */
+  .sidebar { 
+    left: -210px; 
+    transition: left 0.3s ease; /* 부드러운 움직임을 위해 추가 */
+  }
+  
+  /* 사이드바가 열렸을 때 (js에서 클래스 토글) */
+  .sidebar.open { 
+    left: 0; 
+  }
+
   .hamburger-btn {
     top: 10px;
     left: 10px;
     background-color: #403d3d;
     color: white;
-    padding: 10px;
+    padding: 10px 15px;
     border-radius: 5px;
-  }
-  .sidebar.close + .hamburger-btn { left: 10px; }
-  
-  .content {
-    margin-left: 0;
-    padding: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
+    z-index: 1001; /* 사이드바(100)나 모달(1000)보다 높게 설정 */
+    display: block !important; /* 모바일에서 확실히 보이게 함 */
   }
 
+  /* 사이드바가 열렸을 때 버튼 위치를 옆으로 밀어주고 싶다면 추가 */
+  .sidebar.open + .hamburger-btn {
+    left: 220px;
+  }
+}
   /* 🛠️ 수정: 체스판과 정보 패널을 세로로 쌓음 */
   .board-and-status-container {
       display: flex; /* Flex로 변경 유지 */
@@ -515,5 +523,6 @@ body {
     max-width: 100%;
   }
   }
+
 
 
